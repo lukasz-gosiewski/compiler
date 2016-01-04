@@ -1547,3 +1547,7 @@ int main(void) {
 void yyerror(std::string s) {
 	std::cout << "Error: " << s << std::endl;
 }
+
+void appendASMCode(std::string code){
+    std::cout << code << std::endl;
+}

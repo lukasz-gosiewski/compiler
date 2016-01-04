@@ -3,12 +3,14 @@
 #include <stack>
 #include <string>
 #include <iostream>
+#include <vector>
 
 void yyerror(std::string s);
 int yylex();
 int yyparse();
 
 std::stack<long long int> memory;
+std::vector<std::string> resultCode;
 
 %}
 
@@ -55,7 +57,7 @@ std::stack<long long int> memory;
 %%
 
 program
-    : DECLARE vdeclarations IN commands END
+    : DECLARE vdeclarations IN commands END {appendASMCode("HALT")}
     ;
 
 vdeclarations
@@ -117,4 +119,9 @@ int main(void) {
 
 void yyerror(std::string s) {
 	std::cout << "Error: " << s << std::endl;
+}
+
+void appendASMCode(std::string code){
+
+    std::cout << code << std::endl;
 }
