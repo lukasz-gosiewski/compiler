@@ -170,15 +170,8 @@ identifier
         std::string ArrayIDAsString($1);
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
 
-        int ArrayCounterAddr = memoryPointer;
-        memoryPointer++;
-
-        setRegister(0, $3);
-        setRegister(1, ArrayCounterAddr);
-        appendASMCode("STORE 0 1");
-
-        $$.memoryStart = variables[ArrayIDAsString];
-        $$.elementIndexAddres = ArrayCounterAddr;
+        $$.memoryStart = variables[ArrayIDAsString] + $3;
+        $$.elementIndexAddres = -1;
     }
     ;
 
