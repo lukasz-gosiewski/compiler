@@ -68,15 +68,34 @@
 #include <stack>
 #include <string>
 #include <iostream>
+#include <vector>
+#include<map>
+#include <sstream>
 
 void yyerror(std::string s);
 int yylex();
 int yyparse();
 
-std::stack<long long int> memory;
+void appendASMCode(std::string code);
+void showASMCode();
+void declareVariable(std::string var);
+void declareArray(std::string array, int size);
+bool isVariableDeclared(std::string var);
+void setRegister(int registerNumber, int value);
+std::string intToString(int value);
 
 
-#line 80 "compiler.tab.c" /* yacc.c:339  */
+std::map<std::string, int>  variables;
+std::vector<std::string> ASMCode;
+int memoryPointer = 0;
+
+struct VarType{
+    int memoryStart;
+    int elementIndexAddres;
+};
+
+
+#line 99 "compiler.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -153,12 +172,18 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 15 "compiler.y" /* yacc.c:355  */
+#line 34 "compiler.y" /* yacc.c:355  */
+
+    struct VarType{
+        int memoryStart;
+        int elementIndexAddres;
+    };
 
     char *str;
     int num;
+    VarType varType;
 
-#line 162 "compiler.tab.c" /* yacc.c:355  */
+#line 187 "compiler.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -175,7 +200,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 179 "compiler.tab.c" /* yacc.c:358  */
+#line 204 "compiler.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -476,10 +501,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    58,    58,    62,    63,    64,    68,    69,    73,    74,
-      75,    76,    77,    78,    79,    80,    84,    85,    86,    87,
-      88,    89,    93,    94,    95,    96,    97,    98,   102,   103,
-     107,   108,   109
+       0,    85,    85,    89,    94,    99,   103,   104,   108,   109,
+     110,   111,   112,   113,   114,   115,   119,   120,   121,   122,
+     123,   124,   128,   129,   130,   131,   132,   133,   137,   138,
+     142,   148,   159
 };
 #endif
 
@@ -1308,8 +1333,86 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
-#line 1313 "compiler.tab.c" /* yacc.c:1646  */
+        case 2:
+#line 85 "compiler.y" /* yacc.c:1646  */
+    {appendASMCode("HALT"); showASMCode();}
+#line 1340 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 3:
+#line 89 "compiler.y" /* yacc.c:1646  */
+    {
+        std::string IDAsString((yyvsp[0].str));
+        if(isVariableDeclared(IDAsString)) yyerror(IDAsString + " is already declared");
+        else declareVariable(IDAsString);
+    }
+#line 1350 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 4:
+#line 94 "compiler.y" /* yacc.c:1646  */
+    {
+        std::string IDAsString((yyvsp[-3].str));
+        if(isVariableDeclared(IDAsString)) yyerror(IDAsString + " is already declared");
+        else declareArray(IDAsString, (yyvsp[-1].num));
+    }
+#line 1360 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 29:
+#line 138 "compiler.y" /* yacc.c:1646  */
+    {(yyval.varType) = (yyvsp[0].varType);}
+#line 1366 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 30:
+#line 142 "compiler.y" /* yacc.c:1646  */
+    {
+        std::string IDAsString((yyvsp[0].str));
+        if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
+        (yyval.varType).memoryStart = variables[IDAsString];
+        (yyval.varType).elementIndexAddres = 0;
+    }
+#line 1377 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 31:
+#line 148 "compiler.y" /* yacc.c:1646  */
+    {
+        std::string ArrayIDAsString((yyvsp[-3].str));
+        std::string ArrayCounterIDAsString((yyvsp[-1].str));
+
+        if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
+        if(!isVariableDeclared(ArrayCounterIDAsString)) yyerror(ArrayCounterIDAsString + " is undeclared");
+
+        (yyval.varType).memoryStart = variables[ArrayIDAsString];
+        (yyval.varType).elementIndexAddres = variables[ArrayCounterIDAsString];
+
+    }
+#line 1393 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 32:
+#line 159 "compiler.y" /* yacc.c:1646  */
+    {
+        std::string ArrayIDAsString((yyvsp[-3].str));
+        if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
+
+        int ArrayCounterAddr = memoryPointer;
+        memoryPointer++;
+
+        setRegister(0, (yyvsp[-1].num));
+        setRegister(1, ArrayCounterAddr);
+        appendASMCode("STORE 0 1");
+
+        (yyval.varType).memoryStart = variables[ArrayIDAsString];
+        (yyval.varType).elementIndexAddres = ArrayCounterAddr;
+    }
+#line 1412 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+
+#line 1416 "compiler.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1537,7 +1640,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 112 "compiler.y" /* yacc.c:1906  */
+#line 175 "compiler.y" /* yacc.c:1906  */
 
 
 int main(void) {
@@ -1546,8 +1649,49 @@ int main(void) {
 
 void yyerror(std::string s) {
 	std::cout << "Error: " << s << std::endl;
+    exit(1);
 }
 
 void appendASMCode(std::string code){
-    std::cout << code << std::endl;
+    ASMCode.push_back(code);
+}
+
+void showASMCode(){
+    for(int i = 0; i < ASMCode.size(); i++){
+        std::cout << ASMCode.front() << std::endl;
+    }
+}
+
+void declareVariable(std::string var){
+    variables[var] = memoryPointer;
+    memoryPointer++;
+}
+
+void declareArray(std::string array, int size){
+    variables[array] = memoryPointer;
+    memoryPointer += size;
+}
+
+bool isVariableDeclared(std::string var){
+    std::map<std::string, int>::iterator it = variables.find(var);
+    return ( it != variables.end() );
+}
+
+void setRegister(int registerNumber, int value){
+    appendASMCode("RESET " + intToString(registerNumber));
+    int actualRegValue = 0;
+
+    while(actualRegValue * 2 <= value){
+        appendASMCode("SHL " + intToString(registerNumber));
+    }
+
+    while(actualRegValue + 1 <= value){
+        appendASMCode("INC " + intToString(registerNumber));
+    }
+}
+
+std::string intToString(int value){
+    std::stringstream ssval;
+    ssval << value;
+    return ssval.str();
 }

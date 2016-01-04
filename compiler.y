@@ -4,19 +4,42 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include<map>
+#include <sstream>
 
 void yyerror(std::string s);
 int yylex();
 int yyparse();
 
-std::stack<long long int> memory;
-std::vector<std::string> resultCode;
+void appendASMCode(std::string code);
+void showASMCode();
+void declareVariable(std::string var);
+void declareArray(std::string array, int size);
+bool isVariableDeclared(std::string var);
+void setRegister(int registerNumber, int value);
+std::string intToString(int value);
+
+
+std::map<std::string, int>  variables;
+std::vector<std::string> ASMCode;
+int memoryPointer = 0;
+
+struct VarType{
+    int memoryStart;
+    int elementIndexAddres;
+};
 
 %}
 
 %union {
+    struct VarType{
+        int memoryStart;
+        int elementIndexAddres;
+    };
+
     char *str;
     int num;
+    VarType varType;
 }
 
 %token DECLARE
@@ -51,18 +74,28 @@ std::vector<std::string> resultCode;
 %token MORE_EQUAL
 %token LEFT_PAR
 %token RIGHT_PAR
-%token<str> ID
-%token<num> NUM
+%token <str> ID
+%token <num> NUM
+%type <varType> expression
+%type <varType> identifier
+%type <varType> value
 
 %%
-
 program
-    : DECLARE vdeclarations IN commands END {appendASMCode("HALT")}
+    : DECLARE vdeclarations IN commands END {appendASMCode("HALT"); showASMCode();}
     ;
 
 vdeclarations
-    : vdeclarations ID
-    | vdeclarations ID LEFT_PAR NUM RIGHT_PAR
+    : vdeclarations ID {
+        std::string IDAsString($2);
+        if(isVariableDeclared(IDAsString)) yyerror(IDAsString + " is already declared");
+        else declareVariable(IDAsString);
+    }
+    | vdeclarations ID LEFT_PAR NUM RIGHT_PAR {
+        std::string IDAsString($2);
+        if(isVariableDeclared(IDAsString)) yyerror(IDAsString + " is already declared");
+        else declareArray(IDAsString, $4);
+    }
     |
     ;
 
@@ -101,14 +134,52 @@ condition
     ;
 
 value
-    : NUM
-    | identifier
+    : NUM{
+        int numAddr = memoryPointer;
+        memoryPointer++;
+
+        setRegister(0, $1);
+        setRegister(1, numAddr);
+        appendASMCode("STORE 0 1");
+
+        $$.memoryStart = numAddr;
+        $$.elementIndexAddres = -1;
+    }
+    | identifier {$$ = $1;}
     ;
 
 identifier
-    : ID
-    | ID LEFT_PAR ID RIGHT_PAR
-    | ID LEFT_PAR NUM RIGHT_PAR
+    : ID {
+        std::string IDAsString($1);
+        if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
+        $$.memoryStart = variables[IDAsString];
+        $$.elementIndexAddres = -1;
+    }
+    | ID LEFT_PAR ID RIGHT_PAR{
+        std::string ArrayIDAsString($1);
+        std::string ArrayCounterIDAsString($3);
+
+        if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
+        if(!isVariableDeclared(ArrayCounterIDAsString)) yyerror(ArrayCounterIDAsString + " is undeclared");
+
+        $$.memoryStart = variables[ArrayIDAsString];
+        $$.elementIndexAddres = variables[ArrayCounterIDAsString];
+
+    }
+    | ID LEFT_PAR NUM RIGHT_PAR{
+        std::string ArrayIDAsString($1);
+        if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
+
+        int ArrayCounterAddr = memoryPointer;
+        memoryPointer++;
+
+        setRegister(0, $3);
+        setRegister(1, ArrayCounterAddr);
+        appendASMCode("STORE 0 1");
+
+        $$.memoryStart = variables[ArrayIDAsString];
+        $$.elementIndexAddres = ArrayCounterAddr;
+    }
     ;
 
 %%
@@ -119,9 +190,49 @@ int main(void) {
 
 void yyerror(std::string s) {
 	std::cout << "Error: " << s << std::endl;
+    exit(1);
 }
 
 void appendASMCode(std::string code){
+    ASMCode.push_back(code);
+}
 
-    std::cout << code << std::endl;
+void showASMCode(){
+    for(int i = 0; i < ASMCode.size(); i++){
+        std::cout << ASMCode.front() << std::endl;
+    }
+}
+
+void declareVariable(std::string var){
+    variables[var] = memoryPointer;
+    memoryPointer++;
+}
+
+void declareArray(std::string array, int size){
+    variables[array] = memoryPointer;
+    memoryPointer += size;
+}
+
+bool isVariableDeclared(std::string var){
+    std::map<std::string, int>::iterator it = variables.find(var);
+    return ( it != variables.end() );
+}
+
+void setRegister(int registerNumber, int value){
+    appendASMCode("RESET " + intToString(registerNumber));
+    int actualRegValue = 0;
+
+    while(actualRegValue * 2 <= value){
+        appendASMCode("SHL " + intToString(registerNumber));
+    }
+
+    while(actualRegValue + 1 <= value){
+        appendASMCode("INC " + intToString(registerNumber));
+    }
+}
+
+std::string intToString(int value){
+    std::stringstream ssval;
+    ssval << value;
+    return ssval.str();
 }

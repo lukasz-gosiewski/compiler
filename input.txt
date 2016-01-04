@@ -1,5 +1,5 @@
 DECLARE
-    a
+    a b c d e f tab(30)
 IN
     a := 5 + 5;
 END
