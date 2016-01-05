@@ -1,10 +1,8 @@
 DECLARE
-    a b(10)
+    a b c
 IN
-    b(1) := 2;
-    b(4) := 15;
-    a := b(4);
-    PUT a;
-    PUT b(4);
-    PUT b(1);
+    a := 4;
+    b := 3;
+    c := 1 - b;
+    PUT c;
 END

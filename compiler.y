@@ -146,8 +146,56 @@ expression
     : value{
         $$ = $1;
     }
-    | value ADD value
-    | value SUB value
+    | value ADD value{
+        if($1.elementIndexAddres == -1) setRegister(1, $1.memoryStart);
+        else{
+            setRegister(1, $1.memoryStart);
+            setRegister(2, $1.elementIndexAddres);
+            appendASMCode("LOAD 3 2");
+            appendASMCode("ADD 1 3");
+        }
+        appendASMCode("LOAD 0 1");
+
+        if($3.elementIndexAddres == -1) setRegister(2, $3.memoryStart);
+        else{
+            setRegister(2, $3.memoryStart);
+            setRegister(3, $3.elementIndexAddres);
+            appendASMCode("LOAD 4 3");
+            appendASMCode("ADD 2 4");
+        }
+        appendASMCode("LOAD 1 2");
+        appendASMCode("ADD 0 1");
+        setRegister(1, memoryPointer);
+        memoryPointer++;
+        appendASMCode("STORE 0 1");
+        $$.memoryStart = memoryPointer - 1;
+        $$.elementIndexAddres = -1;
+    }
+    | value SUB value{
+        if($1.elementIndexAddres == -1) setRegister(1, $1.memoryStart);
+        else{
+            setRegister(1, $1.memoryStart);
+            setRegister(2, $1.elementIndexAddres);
+            appendASMCode("LOAD 3 2");
+            appendASMCode("ADD 1 3");
+        }
+        appendASMCode("LOAD 0 1");
+
+        if($3.elementIndexAddres == -1) setRegister(2, $3.memoryStart);
+        else{
+            setRegister(2, $3.memoryStart);
+            setRegister(3, $3.elementIndexAddres);
+            appendASMCode("LOAD 4 3");
+            appendASMCode("ADD 2 4");
+        }
+        appendASMCode("LOAD 1 2");
+        appendASMCode("SUB 0 1");
+        setRegister(1, memoryPointer);
+        memoryPointer++;
+        appendASMCode("STORE 0 1");
+        $$.memoryStart = memoryPointer - 1;
+        $$.elementIndexAddres = -1;
+    }
     | value MULT value
     | value DIV value
     | value MOD value
