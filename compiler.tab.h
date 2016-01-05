@@ -87,7 +87,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 34 "compiler.y" /* yacc.c:1909  */
+#line 37 "compiler.y" /* yacc.c:1909  */
 
     struct VarType{
         int memoryStart;

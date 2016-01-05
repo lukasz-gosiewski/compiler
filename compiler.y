@@ -6,6 +6,8 @@
 #include <vector>
 #include<map>
 #include <sstream>
+#include <algorithm>
+#include <fstream>
 
 void yyerror(std::string s);
 int yylex();
@@ -18,6 +20,8 @@ void declareArray(std::string array, int size);
 bool isVariableDeclared(std::string var);
 void setRegister(int registerNumber, int value);
 std::string intToString(int value);
+std::string binary(unsigned x);
+void saveCodeToFile();
 
 
 std::map<std::string, int>  variables;
@@ -28,7 +32,6 @@ struct VarType{
     int memoryStart;
     int elementIndexAddres;
 };
-
 %}
 
 %union {
@@ -79,10 +82,11 @@ struct VarType{
 %type <varType> expression
 %type <varType> identifier
 %type <varType> value
+%type <varType> condition
 
 %%
 program
-    : DECLARE vdeclarations IN commands END {appendASMCode("HALT"); showASMCode();}
+    : DECLARE vdeclarations IN commands END {appendASMCode("HALT"); showASMCode(); saveCodeToFile();}
     ;
 
 vdeclarations
@@ -105,14 +109,20 @@ commands
     ;
 
 command
-    : ID ASSIGN expression SEMICOLON
+    : ID ASSIGN expression SEMICOLON{
+        
+    }
     | IF condition THEN commands ENDIF
     | IF condition THEN commands ELSE commands ENDIF
     | WHILE condition DO commands ENDWHILE
     | FOR ID FROM value TO value DO commands ENDFOR
     | FOR ID DOWN FROM value TO value DO commands ENDFOR
     | GET identifier SEMICOLON
-    | PUT value SEMICOLON
+    | PUT value SEMICOLON{
+        setRegister(1, $2.memoryStart);
+        appendASMCode("LOAD 0 1");
+        appendASMCode("WRITE 0");
+    }
     ;
 
 expression
@@ -127,7 +137,32 @@ expression
 condition
     : value EQUAL value
     | value DIFF value
-    | value LESS value
+    | value LESS value{
+        if($1.elementIndexAddres != -1){
+            setRegister(0, $1.memoryStart);
+            setRegister(1, $1.elementIndexAddres);
+            appendASMCode("LOAD 2 1");
+            appendASMCode("ADD 0 2");
+        }
+        else setRegister(0, $1.memoryStart);
+
+        if($3.elementIndexAddres != -1){
+            setRegister(1, $3.memoryStart);
+            setRegister(2, $3.elementIndexAddres);
+            appendASMCode("LOAD 3 2");
+            appendASMCode("ADD 1 3");
+        }
+        else setRegister(0, $1.memoryStart);
+
+        appendASMCode("LOAD 2 0");
+        appendASMCode("LOAD 3 1");
+        appendASMCode("SUB 3 2");
+        setRegister(2, memoryPointer);
+        memoryPointer++;
+        appendASMCode("STORE 3 2");
+        $$.memoryStart = memoryPointer - 1;
+        $$.elementIndexAddres = -1;
+    }
     | value MORE value
     | value LESS_EQUAL value
     | value MORE_EQUAL value
@@ -192,7 +227,7 @@ void appendASMCode(std::string code){
 
 void showASMCode(){
     for(int i = 0; i < ASMCode.size(); i++){
-        std::cout << ASMCode.front() << std::endl;
+        std::cout << ASMCode[i] << std::endl;
     }
 }
 
@@ -212,20 +247,41 @@ bool isVariableDeclared(std::string var){
 }
 
 void setRegister(int registerNumber, int value){
-    appendASMCode("RESET " + intToString(registerNumber));
-    int actualRegValue = 0;
+    std::string binaryNumber = binary(value);
 
-    while(actualRegValue * 2 <= value){
+    appendASMCode("RESET " + intToString(registerNumber));
+    for(int i = 0; i < binaryNumber.size() - 1; i++){
+        if(binaryNumber[i] == '1') appendASMCode("INC " + intToString(registerNumber));
         appendASMCode("SHL " + intToString(registerNumber));
     }
-
-    while(actualRegValue + 1 <= value){
-        appendASMCode("INC " + intToString(registerNumber));
-    }
+    if(binaryNumber[binaryNumber.size() - 1] == '1') appendASMCode("INC " + intToString(registerNumber));
 }
 
 std::string intToString(int value){
     std::stringstream ssval;
     ssval << value;
     return ssval.str();
+}
+
+void saveCodeToFile(){
+    std::ofstream ofs;
+    ofs.open("input.iml", std::ofstream::out | std::ofstream::trunc);
+    ofs.close();
+
+    std::ofstream output("input.iml", std::ios_base::app | std::ios_base::out);
+    for(int i = 0; i < ASMCode.size(); i++){
+        output << ASMCode[i] << std::endl;
+    }
+    output.close();
+}
+
+std::string binary(unsigned x){
+    std::string s;
+    do
+    {
+        s.push_back('0' + (x & 1));
+    } while (x >>= 1);
+    std::reverse(s.begin(), s.end());
+    return s;
+
 }

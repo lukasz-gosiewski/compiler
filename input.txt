@@ -1,5 +1,0 @@
-DECLARE
-    a b c d e f tab(30)
-IN
-    
-END

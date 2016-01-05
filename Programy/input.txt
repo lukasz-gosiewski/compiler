@@ -1,0 +1,7 @@
+DECLARE
+    a b
+IN
+    IF 20 < 4 THEN
+        PUT 23;
+    ENDIF
+END
