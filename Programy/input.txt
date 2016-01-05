@@ -1,7 +1,10 @@
 DECLARE
-    a b
+    a b(10)
 IN
-    IF 20 < 4 THEN
-        PUT 23;
-    ENDIF
+    b(1) := 2;
+    b(4) := 15;
+    a := b(4);
+    PUT a;
+    PUT b(4);
+    PUT b(1);
 END

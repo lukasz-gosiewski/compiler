@@ -86,7 +86,7 @@ struct VarType{
 
 %%
 program
-    : DECLARE vdeclarations IN commands END {appendASMCode("HALT"); showASMCode(); saveCodeToFile();}
+    : DECLARE vdeclarations IN commands END {appendASMCode("HALT"); saveCodeToFile();}
     ;
 
 vdeclarations
@@ -109,8 +109,25 @@ commands
     ;
 
 command
-    : ID ASSIGN expression SEMICOLON{
-        
+    : identifier ASSIGN expression SEMICOLON{
+        if($1.elementIndexAddres == -1) setRegister(0, $1.memoryStart);
+        else{
+            setRegister(0, $1.memoryStart);
+            setRegister(1, $1.elementIndexAddres);
+            appendASMCode("LOAD 2 1");
+            appendASMCode("ADD 0 2");
+        }
+
+        if($3.elementIndexAddres == -1) setRegister(2, $3.memoryStart);
+        else{
+            setRegister(2, $3.memoryStart);
+            setRegister(3, $3.elementIndexAddres);
+            appendASMCode("LOAD 4 3");
+            appendASMCode("ADD 2 4");
+        }
+
+        appendASMCode("LOAD 1 2");
+        appendASMCode("STORE 1 0");
     }
     | IF condition THEN commands ENDIF
     | IF condition THEN commands ELSE commands ENDIF
@@ -126,7 +143,9 @@ command
     ;
 
 expression
-    : value
+    : value{
+        $$ = $1;
+    }
     | value ADD value
     | value SUB value
     | value MULT value
