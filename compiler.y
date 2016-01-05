@@ -254,7 +254,21 @@ expression
         }
         appendASMCode("LOAD 1 2");
         appendASMCode("RESET 2");
-        
+
+        appendASMCode("INC 0");
+        appendASMCode("SUB 0 1");
+        int finishASMLine = ASMCode.size() + 3;
+        appendASMCode("JZERO 0 " + intToString(finishASMLine));
+        appendASMCode("INC 2");
+        int startASMLine = ASMCode.size() - 3;
+        appendASMCode("JUMP " + intToString(startASMLine));
+
+        setRegister(0, memoryPointer);
+        memoryPointer++;
+        appendASMCode("STORE 2 0");
+
+        $$.memoryStart = memoryPointer - 1;
+        $$.elementIndexAddres = -1;
     }
     | value MOD value
     ;
