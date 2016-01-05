@@ -1,8 +1,8 @@
 DECLARE
-    a b c
+    a(10) c
 IN
-    a := 4;
-    b := 3;
-    c := 1 - b;
+    a(1) := 12;
+    a(2) := 2;
+    c := a(1) * a(2);
     PUT c;
 END

@@ -189,6 +189,7 @@ expression
             appendASMCode("ADD 2 4");
         }
         appendASMCode("LOAD 1 2");
+
         appendASMCode("SUB 0 1");
         setRegister(1, memoryPointer);
         memoryPointer++;
@@ -196,8 +197,65 @@ expression
         $$.memoryStart = memoryPointer - 1;
         $$.elementIndexAddres = -1;
     }
-    | value MULT value
-    | value DIV value
+    | value MULT value{
+        //TODO: Usprawnic ten algorytm
+        if($1.elementIndexAddres == -1) setRegister(1, $1.memoryStart);
+        else{
+            setRegister(1, $1.memoryStart);
+            setRegister(2, $1.elementIndexAddres);
+            appendASMCode("LOAD 3 2");
+            appendASMCode("ADD 1 3");
+        }
+        appendASMCode("LOAD 0 1");
+
+        if($3.elementIndexAddres == -1) setRegister(2, $3.memoryStart);
+        else{
+            setRegister(2, $3.memoryStart);
+            setRegister(3, $3.elementIndexAddres);
+            appendASMCode("LOAD 4 3");
+            appendASMCode("ADD 2 4");
+        }
+        appendASMCode("LOAD 1 2");
+        setRegister(2, 1);
+        appendASMCode("COPY 3 0");
+        appendASMCode("RESET 0");
+
+        int startingASMLine = ASMCode.size();
+        appendASMCode("ADD 0 3");
+        appendASMCode("SUB 1 2");
+        int finishASMLine = ASMCode.size() + 3;
+        appendASMCode("JZERO 1 " + intToString(finishASMLine));
+        appendASMCode("JUMP " + intToString(startingASMLine));
+
+        setRegister(1, memoryPointer);
+        memoryPointer++;
+        appendASMCode("STORE 0 1");
+
+        $$.memoryStart = memoryPointer - 1;
+        $$.elementIndexAddres = -1;
+    }
+    | value DIV value{
+        //TODO: Usprawnic ten algorytm
+        if($1.elementIndexAddres == -1) setRegister(1, $1.memoryStart);
+        else{
+            setRegister(1, $1.memoryStart);
+            setRegister(2, $1.elementIndexAddres);
+            appendASMCode("LOAD 3 2");
+            appendASMCode("ADD 1 3");
+        }
+        appendASMCode("LOAD 0 1");
+
+        if($3.elementIndexAddres == -1) setRegister(2, $3.memoryStart);
+        else{
+            setRegister(2, $3.memoryStart);
+            setRegister(3, $3.elementIndexAddres);
+            appendASMCode("LOAD 4 3");
+            appendASMCode("ADD 2 4");
+        }
+        appendASMCode("LOAD 1 2");
+        appendASMCode("RESET 2");
+        
+    }
     | value MOD value
     ;
 
@@ -245,7 +303,7 @@ value
         appendASMCode("STORE 0 1");
 
         $$.memoryStart = numAddr;
-        $$.elementIndexAddres = -1;
+        $$.elementIndexAddres = - 1;
     }
     | identifier {$$ = $1;}
     ;

@@ -505,9 +505,9 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    89,    89,    93,    98,   103,   107,   108,   112,   132,
-     133,   134,   135,   136,   137,   138,   146,   149,   174,   199,
-     200,   201,   205,   206,   207,   233,   234,   235,   239,   250,
-     254,   260,   271
+     133,   134,   135,   136,   137,   138,   146,   149,   174,   200,
+     236,   237,   241,   242,   243,   269,   270,   271,   275,   286,
+     290,   296,   307
 };
 #endif
 
@@ -1453,6 +1453,7 @@ yyreduce:
             appendASMCode("ADD 2 4");
         }
         appendASMCode("LOAD 1 2");
+
         appendASMCode("SUB 0 1");
         setRegister(1, memoryPointer);
         memoryPointer++;
@@ -1460,11 +1461,52 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1464 "compiler.tab.c" /* yacc.c:1646  */
+#line 1465 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 19:
+#line 200 "compiler.y" /* yacc.c:1646  */
+    {
+        if((yyvsp[-2].varType).elementIndexAddres == -1) setRegister(1, (yyvsp[-2].varType).memoryStart);
+        else{
+            setRegister(1, (yyvsp[-2].varType).memoryStart);
+            setRegister(2, (yyvsp[-2].varType).elementIndexAddres);
+            appendASMCode("LOAD 3 2");
+            appendASMCode("ADD 1 3");
+        }
+        appendASMCode("LOAD 0 1");
+
+        if((yyvsp[0].varType).elementIndexAddres == -1) setRegister(2, (yyvsp[0].varType).memoryStart);
+        else{
+            setRegister(2, (yyvsp[0].varType).memoryStart);
+            setRegister(3, (yyvsp[0].varType).elementIndexAddres);
+            appendASMCode("LOAD 4 3");
+            appendASMCode("ADD 2 4");
+        }
+        appendASMCode("LOAD 1 2");
+        setRegister(2, 1);
+        appendASMCode("COPY 3 0");
+        appendASMCode("RESET 0");
+
+        int startingASMLine = ASMCode.size();
+        appendASMCode("ADD 0 3");
+        appendASMCode("SUB 1 2");
+        int finishASMLine = ASMCode.size() + 3;
+        appendASMCode("JZERO 1 " + intToString(finishASMLine));
+        appendASMCode("JUMP " + intToString(startingASMLine));
+
+        setRegister(1, memoryPointer);
+        memoryPointer++;
+        appendASMCode("STORE 0 1");
+
+        (yyval.varType).memoryStart = memoryPointer - 1;
+        (yyval.varType).elementIndexAddres = -1;
+    }
+#line 1506 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 207 "compiler.y" /* yacc.c:1646  */
+#line 243 "compiler.y" /* yacc.c:1646  */
     {
         if((yyvsp[-2].varType).elementIndexAddres != -1){
             setRegister(0, (yyvsp[-2].varType).memoryStart);
@@ -1491,11 +1533,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1495 "compiler.tab.c" /* yacc.c:1646  */
+#line 1537 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 239 "compiler.y" /* yacc.c:1646  */
+#line 275 "compiler.y" /* yacc.c:1646  */
     {
         int numAddr = memoryPointer;
         memoryPointer++;
@@ -1505,30 +1547,30 @@ yyreduce:
         appendASMCode("STORE 0 1");
 
         (yyval.varType).memoryStart = numAddr;
-        (yyval.varType).elementIndexAddres = -1;
+        (yyval.varType).elementIndexAddres = - 1;
     }
-#line 1511 "compiler.tab.c" /* yacc.c:1646  */
+#line 1553 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 250 "compiler.y" /* yacc.c:1646  */
+#line 286 "compiler.y" /* yacc.c:1646  */
     {(yyval.varType) = (yyvsp[0].varType);}
-#line 1517 "compiler.tab.c" /* yacc.c:1646  */
+#line 1559 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 254 "compiler.y" /* yacc.c:1646  */
+#line 290 "compiler.y" /* yacc.c:1646  */
     {
         std::string IDAsString((yyvsp[0].str));
         if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
         (yyval.varType).memoryStart = variables[IDAsString];
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1528 "compiler.tab.c" /* yacc.c:1646  */
+#line 1570 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 260 "compiler.y" /* yacc.c:1646  */
+#line 296 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         std::string ArrayCounterIDAsString((yyvsp[-1].str));
@@ -1540,11 +1582,11 @@ yyreduce:
         (yyval.varType).elementIndexAddres = variables[ArrayCounterIDAsString];
 
     }
-#line 1544 "compiler.tab.c" /* yacc.c:1646  */
+#line 1586 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 271 "compiler.y" /* yacc.c:1646  */
+#line 307 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
@@ -1552,11 +1594,11 @@ yyreduce:
         (yyval.varType).memoryStart = variables[ArrayIDAsString] + (yyvsp[-1].num);
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1556 "compiler.tab.c" /* yacc.c:1646  */
+#line 1598 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1560 "compiler.tab.c" /* yacc.c:1646  */
+#line 1602 "compiler.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1784,7 +1826,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 280 "compiler.y" /* yacc.c:1906  */
+#line 316 "compiler.y" /* yacc.c:1906  */
 
 
 int main(void) {
