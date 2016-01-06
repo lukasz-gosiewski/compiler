@@ -1,47 +1,17 @@
 %{
 
-#include <stack>
-#include <string>
-#include <iostream>
-#include <vector>
-#include<map>
-#include <sstream>
-#include <algorithm>
-#include <fstream>
+#include "compiler.h"
 
-void yyerror(std::string s);
-int yylex();
-int yyparse();
-
-void appendASMCode(std::string code);
-void showASMCode();
-void declareVariable(std::string var);
-void declareArray(std::string array, int size);
-bool isVariableDeclared(std::string var);
-void setRegister(int registerNumber, int value);
-std::string intToString(int value);
-std::string binary(unsigned x);
-void saveCodeToFile();
-
-
-std::map<std::string, int>  variables;
+std::map<std::string, long long int>  variables;
 std::vector<std::string> ASMCode;
-int memoryPointer = 0;
+std::stack<long long int> jumpPlaces;
+long long int memoryPointer = 0;
 
-struct VarType{
-    int memoryStart;
-    int elementIndexAddres;
-};
 %}
 
 %union {
-    struct VarType{
-        int memoryStart;
-        int elementIndexAddres;
-    };
-
     char *str;
-    int num;
+    long long int num;
     VarType varType;
 }
 
@@ -85,6 +55,7 @@ struct VarType{
 %type <varType> condition
 
 %%
+
 program
     : DECLARE vdeclarations IN commands END {appendASMCode("HALT"); saveCodeToFile();}
     ;
@@ -125,19 +96,21 @@ command
             appendASMCode("LOAD 4 3");
             appendASMCode("ADD 2 4");
         }
-
         appendASMCode("LOAD 1 2");
+
         appendASMCode("STORE 1 0");
     }
-    | IF condition THEN commands ENDIF
+    | IF condition THEN commands ENDIF{
+        ASMCode[jumpPlaces.top()] += intToString(ASMCode.size());
+        jumpPlaces.pop();
+    }
     | IF condition THEN commands ELSE commands ENDIF
     | WHILE condition DO commands ENDWHILE
     | FOR ID FROM value TO value DO commands ENDFOR
     | FOR ID DOWN FROM value TO value DO commands ENDFOR
     | GET identifier SEMICOLON
     | PUT value SEMICOLON{
-        setRegister(1, $2.memoryStart);
-        appendASMCode("LOAD 0 1");
+        loadVarToRegister($2, 0);
         appendASMCode("WRITE 0");
     }
     ;
@@ -147,48 +120,20 @@ expression
         $$ = $1;
     }
     | value ADD value{
-        if($1.elementIndexAddres == -1) setRegister(1, $1.memoryStart);
-        else{
-            setRegister(1, $1.memoryStart);
-            setRegister(2, $1.elementIndexAddres);
-            appendASMCode("LOAD 3 2");
-            appendASMCode("ADD 1 3");
-        }
-        appendASMCode("LOAD 0 1");
+        loadVarToRegister($1, 0);
+        loadVarToRegister($3, 1);
 
-        if($3.elementIndexAddres == -1) setRegister(2, $3.memoryStart);
-        else{
-            setRegister(2, $3.memoryStart);
-            setRegister(3, $3.elementIndexAddres);
-            appendASMCode("LOAD 4 3");
-            appendASMCode("ADD 2 4");
-        }
-        appendASMCode("LOAD 1 2");
         appendASMCode("ADD 0 1");
         setRegister(1, memoryPointer);
         memoryPointer++;
         appendASMCode("STORE 0 1");
+
         $$.memoryStart = memoryPointer - 1;
         $$.elementIndexAddres = -1;
     }
     | value SUB value{
-        if($1.elementIndexAddres == -1) setRegister(1, $1.memoryStart);
-        else{
-            setRegister(1, $1.memoryStart);
-            setRegister(2, $1.elementIndexAddres);
-            appendASMCode("LOAD 3 2");
-            appendASMCode("ADD 1 3");
-        }
-        appendASMCode("LOAD 0 1");
-
-        if($3.elementIndexAddres == -1) setRegister(2, $3.memoryStart);
-        else{
-            setRegister(2, $3.memoryStart);
-            setRegister(3, $3.elementIndexAddres);
-            appendASMCode("LOAD 4 3");
-            appendASMCode("ADD 2 4");
-        }
-        appendASMCode("LOAD 1 2");
+        loadVarToRegister($1, 0);
+        loadVarToRegister($3, 1);
 
         appendASMCode("SUB 0 1");
         setRegister(1, memoryPointer);
@@ -199,34 +144,18 @@ expression
     }
     | value MULT value{
         //TODO: Usprawnic ten algorytm
-        if($1.elementIndexAddres == -1) setRegister(1, $1.memoryStart);
-        else{
-            setRegister(1, $1.memoryStart);
-            setRegister(2, $1.elementIndexAddres);
-            appendASMCode("LOAD 3 2");
-            appendASMCode("ADD 1 3");
-        }
-        appendASMCode("LOAD 0 1");
+        loadVarToRegister($1, 0);
+        loadVarToRegister($3, 1);
 
-        if($3.elementIndexAddres == -1) setRegister(2, $3.memoryStart);
-        else{
-            setRegister(2, $3.memoryStart);
-            setRegister(3, $3.elementIndexAddres);
-            appendASMCode("LOAD 4 3");
-            appendASMCode("ADD 2 4");
-        }
-        appendASMCode("LOAD 1 2");
         setRegister(2, 1);
         appendASMCode("COPY 3 0");
         appendASMCode("RESET 0");
-
-        int startingASMLine = ASMCode.size();
+        long long int startingASMLine = ASMCode.size();
         appendASMCode("ADD 0 3");
         appendASMCode("SUB 1 2");
-        int finishASMLine = ASMCode.size() + 3;
+        long long int finishASMLine = ASMCode.size() + 3;
         appendASMCode("JZERO 1 " + intToString(finishASMLine));
         appendASMCode("JUMP " + intToString(startingASMLine));
-
         setRegister(1, memoryPointer);
         memoryPointer++;
         appendASMCode("STORE 0 1");
@@ -236,33 +165,17 @@ expression
     }
     | value DIV value{
         //TODO: Usprawnic ten algorytm
-        if($1.elementIndexAddres == -1) setRegister(1, $1.memoryStart);
-        else{
-            setRegister(1, $1.memoryStart);
-            setRegister(2, $1.elementIndexAddres);
-            appendASMCode("LOAD 3 2");
-            appendASMCode("ADD 1 3");
-        }
-        appendASMCode("LOAD 0 1");
+        loadVarToRegister($1, 0);
+        loadVarToRegister($3, 1);
 
-        if($3.elementIndexAddres == -1) setRegister(2, $3.memoryStart);
-        else{
-            setRegister(2, $3.memoryStart);
-            setRegister(3, $3.elementIndexAddres);
-            appendASMCode("LOAD 4 3");
-            appendASMCode("ADD 2 4");
-        }
-        appendASMCode("LOAD 1 2");
         appendASMCode("RESET 2");
-
         appendASMCode("INC 0");
         appendASMCode("SUB 0 1");
-        int finishASMLine = ASMCode.size() + 3;
+        long long int finishASMLine = ASMCode.size() + 3;
         appendASMCode("JZERO 0 " + intToString(finishASMLine));
         appendASMCode("INC 2");
-        int startASMLine = ASMCode.size() - 3;
+        long long int startASMLine = ASMCode.size() - 3;
         appendASMCode("JUMP " + intToString(startASMLine));
-
         setRegister(0, memoryPointer);
         memoryPointer++;
         appendASMCode("STORE 2 0");
@@ -270,38 +183,23 @@ expression
         $$.memoryStart = memoryPointer - 1;
         $$.elementIndexAddres = -1;
     }
-    | value MOD value
+    | value MOD value //TODO: Implement this
     ;
 
 condition
     : value EQUAL value
-    | value DIFF value
-    | value LESS value{
-        if($1.elementIndexAddres != -1){
-            setRegister(0, $1.memoryStart);
-            setRegister(1, $1.elementIndexAddres);
-            appendASMCode("LOAD 2 1");
-            appendASMCode("ADD 0 2");
-        }
-        else setRegister(0, $1.memoryStart);
+    | value DIFF value{
+        loadVarToRegister($1, 0);
+        loadVarToRegister($3, 1);
 
-        if($3.elementIndexAddres != -1){
-            setRegister(1, $3.memoryStart);
-            setRegister(2, $3.elementIndexAddres);
-            appendASMCode("LOAD 3 2");
-            appendASMCode("ADD 1 3");
-        }
-        else setRegister(0, $1.memoryStart);
-
-        appendASMCode("LOAD 2 0");
-        appendASMCode("LOAD 3 1");
-        appendASMCode("SUB 3 2");
-        setRegister(2, memoryPointer);
-        memoryPointer++;
-        appendASMCode("STORE 3 2");
-        $$.memoryStart = memoryPointer - 1;
-        $$.elementIndexAddres = -1;
+        appendASMCode("COPY 2 1");
+        appendASMCode("SUB 1 0");
+        appendASMCode("SUB 0 2");
+        appendASMCode("ADD 0 1");
+        jumpPlaces.push(ASMCode.size());
+        appendASMCode("JZERO 0 ");
     }
+    | value LESS value
     | value MORE value
     | value LESS_EQUAL value
     | value MORE_EQUAL value
@@ -309,7 +207,7 @@ condition
 
 value
     : NUM{
-        int numAddr = memoryPointer;
+        long long int numAddr = memoryPointer;
         memoryPointer++;
 
         setRegister(0, $1);
@@ -353,74 +251,4 @@ identifier
 
 int main(void) {
 	return yyparse();
-}
-
-void yyerror(std::string s) {
-	std::cout << "Error: " << s << std::endl;
-    exit(1);
-}
-
-void appendASMCode(std::string code){
-    ASMCode.push_back(code);
-}
-
-void showASMCode(){
-    for(int i = 0; i < ASMCode.size(); i++){
-        std::cout << ASMCode[i] << std::endl;
-    }
-}
-
-void declareVariable(std::string var){
-    variables[var] = memoryPointer;
-    memoryPointer++;
-}
-
-void declareArray(std::string array, int size){
-    variables[array] = memoryPointer;
-    memoryPointer += size;
-}
-
-bool isVariableDeclared(std::string var){
-    std::map<std::string, int>::iterator it = variables.find(var);
-    return ( it != variables.end() );
-}
-
-void setRegister(int registerNumber, int value){
-    std::string binaryNumber = binary(value);
-
-    appendASMCode("RESET " + intToString(registerNumber));
-    for(int i = 0; i < binaryNumber.size() - 1; i++){
-        if(binaryNumber[i] == '1') appendASMCode("INC " + intToString(registerNumber));
-        appendASMCode("SHL " + intToString(registerNumber));
-    }
-    if(binaryNumber[binaryNumber.size() - 1] == '1') appendASMCode("INC " + intToString(registerNumber));
-}
-
-std::string intToString(int value){
-    std::stringstream ssval;
-    ssval << value;
-    return ssval.str();
-}
-
-void saveCodeToFile(){
-    std::ofstream ofs;
-    ofs.open("input.iml", std::ofstream::out | std::ofstream::trunc);
-    ofs.close();
-
-    std::ofstream output("input.iml", std::ios_base::app | std::ios_base::out);
-    for(int i = 0; i < ASMCode.size(); i++){
-        output << ASMCode[i] << std::endl;
-    }
-    output.close();
-}
-
-std::string binary(unsigned x){
-    std::string s;
-    do
-    {
-        s.push_back('0' + (x & 1));
-    } while (x >>= 1);
-    std::reverse(s.begin(), s.end());
-    return s;
-
 }

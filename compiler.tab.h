@@ -87,18 +87,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 37 "compiler.y" /* yacc.c:1909  */
-
-    struct VarType{
-        int memoryStart;
-        int elementIndexAddres;
-    };
+#line 12 "compiler.y" /* yacc.c:1909  */
 
     char *str;
-    int num;
+    long long int num;
     VarType varType;
 
-#line 102 "compiler.tab.h" /* yacc.c:1909  */
+#line 97 "compiler.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

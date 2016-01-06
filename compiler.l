@@ -1,4 +1,5 @@
 %{
+#include "compiler.h"
 #include "compiler.tab.h"
 #include <stdio.h>
 #include <string.h>

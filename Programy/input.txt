@@ -1,8 +1,10 @@
 DECLARE
-    a(10)
+    a
 IN
-    a(1) := 2;
-    a(2) := 6;
-    a(5) := a(2) / a(1);
-    PUT a(5);
+    a := 2;
+    IF 0 != 1 THEN
+        a := 5;
+    ENDIF
+
+    PUT a;
 END
