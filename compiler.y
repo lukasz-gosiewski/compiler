@@ -104,7 +104,15 @@ command
         ASMCode[jumpPlaces.top()] += intToString(ASMCode.size());
         jumpPlaces.pop();
     }
-    | IF condition THEN commands ELSE commands ENDIF
+    | IF condition THEN commands{} ELSE{
+            ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
+            jumpPlaces.pop();
+            jumpPlaces.push(ASMCode.size());
+            appendASMCode("JUMP ");
+        } commands ENDIF{
+            ASMCode[jumpPlaces.top()] += intToString(ASMCode.size());
+            jumpPlaces.pop();
+        }
     | WHILE condition DO commands ENDWHILE
     | FOR ID FROM value TO value DO commands ENDFOR
     | FOR ID DOWN FROM value TO value DO commands ENDFOR

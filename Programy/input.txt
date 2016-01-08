@@ -1,7 +1,12 @@
 DECLARE
-    a(10)
+    a
 IN
-    GET a(2);
-    GET a(3);
-    PUT a(2);
+    a := 0;
+    IF 3 > 4 THEN
+        a := 6;
+    ELSE
+        a := 3;
+    ENDIF
+
+    PUT a;
 END
