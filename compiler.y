@@ -103,17 +103,26 @@ command
     | IF condition THEN commands ENDIF{
         ASMCode[jumpPlaces.top()] += intToString(ASMCode.size());
         jumpPlaces.pop();
+        jumpPlaces.pop();
     }
     | IF condition THEN commands{} ELSE{
             ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
+            jumpPlaces.pop();
             jumpPlaces.pop();
             jumpPlaces.push(ASMCode.size());
             appendASMCode("JUMP ");
         } commands ENDIF{
             ASMCode[jumpPlaces.top()] += intToString(ASMCode.size());
             jumpPlaces.pop();
+            jumpPlaces.pop();
         }
-    | WHILE condition DO commands ENDWHILE
+    | WHILE condition DO commands ENDWHILE{
+        ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
+        jumpPlaces.pop();
+
+        appendASMCode("JUMP " + intToString(jumpPlaces.top()));
+        jumpPlaces.pop();
+    }
     | FOR ID FROM value TO value DO commands ENDFOR
     | FOR ID DOWN FROM value TO value DO commands ENDFOR
     | GET identifier SEMICOLON{
@@ -288,6 +297,7 @@ condition
         appendASMCode("JZERO 0 ");
     }
     | value LESS value{
+        jumpPlaces.push(ASMCode.size() + 1);
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);
 

@@ -2,11 +2,11 @@ DECLARE
     a
 IN
     a := 0;
-    IF 3 > 4 THEN
-        a := 6;
-    ELSE
-        a := 3;
-    ENDIF
+
+    WHILE a < 10 DO
+        a := a + 1;
+        PUT a;
+    ENDWHILE
 
     PUT a;
 END
