@@ -164,26 +164,76 @@ expression
         $$.elementIndexAddres = -1;
     }
     | value DIV value{
-        //TODO: Usprawnic ten algorytm
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);
+        appendASMCode("RESET 4");
 
-        appendASMCode("RESET 2");
-        appendASMCode("INC 0");
-        appendASMCode("SUB 0 1");
-        long long int finishASMLine = ASMCode.size() + 3;
-        appendASMCode("JZERO 0 " + intToString(finishASMLine));
-        appendASMCode("INC 2");
-        long long int startASMLine = ASMCode.size() - 3;
-        appendASMCode("JUMP " + intToString(startASMLine));
+        appendASMCode("JZERO 0 " + intToString(ASMCode.size() + 21));
+        appendASMCode("JZERO 1 " + intToString(ASMCode.size() + 20));
+
+        appendASMCode("COPY 2 1");
+        appendASMCode("SHL 2");
+        appendASMCode("COPY 3 2");
+        appendASMCode("SUB 3 0");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() - 3));
+
+        appendASMCode("SHR 2");
+        appendASMCode("COPY 3 2");
+        appendASMCode("INC 3");
+        appendASMCode("SUB 3 1");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() + 10));
+        appendASMCode("SHL 4");
+        appendASMCode("COPY 3 0");
+        appendASMCode("INC 3");
+        appendASMCode("SUB 3 2");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() + 3));
+        appendASMCode("SUB 0 2");
+        appendASMCode("INC 4");
+        appendASMCode("SHR 2");
+        appendASMCode("JUMP " + intToString(ASMCode.size() - 12));
+
         setRegister(0, memoryPointer);
         memoryPointer++;
-        appendASMCode("STORE 2 0");
+        appendASMCode("STORE 4 0");
 
         $$.memoryStart = memoryPointer - 1;
         $$.elementIndexAddres = -1;
     }
-    | value MOD value //TODO: Implement this
+    | value MOD value{
+        loadVarToRegister($1, 0);
+        loadVarToRegister($3, 1);
+
+        appendASMCode("JZERO 0 " + intToString(ASMCode.size() + 19));
+        appendASMCode("JZERO 1 " + intToString(ASMCode.size() + 19));
+
+        appendASMCode("COPY 2 1");
+        appendASMCode("SHL 2");
+        appendASMCode("COPY 3 2");
+        appendASMCode("SUB 3 0");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() - 3));
+
+        appendASMCode("SHR 2");
+        appendASMCode("COPY 3 2");
+        appendASMCode("INC 3");
+        appendASMCode("SUB 3 1");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() + 8));
+        appendASMCode("COPY 3 0");
+        appendASMCode("INC 3");
+        appendASMCode("SUB 3 2");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() + 2));
+        appendASMCode("SUB 0 2");
+        appendASMCode("SHR 2");
+        appendASMCode("JUMP " + intToString(ASMCode.size() - 10));
+        appendASMCode("JUMP " + intToString(ASMCode.size() + 2));
+        appendASMCode("RESET 0");
+
+        setRegister(1, memoryPointer);
+        memoryPointer++;
+        appendASMCode("STORE 0 1");
+
+        $$.memoryStart = memoryPointer - 1;
+        $$.elementIndexAddres = -1;
+    }
     ;
 
 condition

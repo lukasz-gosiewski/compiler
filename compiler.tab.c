@@ -476,8 +476,8 @@ static const yytype_uint16 yyrline[] =
 {
        0,    60,    60,    64,    69,    74,    78,    79,    83,   103,
      107,   108,   109,   110,   111,   112,   119,   122,   134,   145,
-     166,   186,   190,   209,   220,   228,   236,   245,   257,   268,
-     272,   278,   289
+     166,   202,   240,   259,   270,   278,   286,   295,   307,   318,
+     322,   328,   339
 };
 #endif
 
@@ -1443,30 +1443,86 @@ yyreduce:
   case 20:
 #line 166 "compiler.y" /* yacc.c:1646  */
     {
-        //TODO: Usprawnic ten algorytm
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
+        appendASMCode("RESET 4");
 
-        appendASMCode("RESET 2");
-        appendASMCode("INC 0");
-        appendASMCode("SUB 0 1");
-        long long int finishASMLine = ASMCode.size() + 3;
-        appendASMCode("JZERO 0 " + intToString(finishASMLine));
-        appendASMCode("INC 2");
-        long long int startASMLine = ASMCode.size() - 3;
-        appendASMCode("JUMP " + intToString(startASMLine));
+        appendASMCode("JZERO 0 " + intToString(ASMCode.size() + 21));
+        appendASMCode("JZERO 1 " + intToString(ASMCode.size() + 20));
+
+        appendASMCode("COPY 2 1");
+        appendASMCode("SHL 2");
+        appendASMCode("COPY 3 2");
+        appendASMCode("SUB 3 0");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() - 3));
+
+        appendASMCode("SHR 2");
+        appendASMCode("COPY 3 2");
+        appendASMCode("INC 3");
+        appendASMCode("SUB 3 1");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() + 10));
+        appendASMCode("SHL 4");
+        appendASMCode("COPY 3 0");
+        appendASMCode("INC 3");
+        appendASMCode("SUB 3 2");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() + 3));
+        appendASMCode("SUB 0 2");
+        appendASMCode("INC 4");
+        appendASMCode("SHR 2");
+        appendASMCode("JUMP " + intToString(ASMCode.size() - 12));
+
         setRegister(0, memoryPointer);
         memoryPointer++;
-        appendASMCode("STORE 2 0");
+        appendASMCode("STORE 4 0");
 
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1466 "compiler.tab.c" /* yacc.c:1646  */
+#line 1482 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 21:
+#line 202 "compiler.y" /* yacc.c:1646  */
+    {
+        loadVarToRegister((yyvsp[-2].varType), 0);
+        loadVarToRegister((yyvsp[0].varType), 1);
+
+        appendASMCode("JZERO 0 " + intToString(ASMCode.size() + 19));
+        appendASMCode("JZERO 1 " + intToString(ASMCode.size() + 19));
+
+        appendASMCode("COPY 2 1");
+        appendASMCode("SHL 2");
+        appendASMCode("COPY 3 2");
+        appendASMCode("SUB 3 0");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() - 3));
+
+        appendASMCode("SHR 2");
+        appendASMCode("COPY 3 2");
+        appendASMCode("INC 3");
+        appendASMCode("SUB 3 1");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() + 8));
+        appendASMCode("COPY 3 0");
+        appendASMCode("INC 3");
+        appendASMCode("SUB 3 2");
+        appendASMCode("JZERO 3 " + intToString(ASMCode.size() + 2));
+        appendASMCode("SUB 0 2");
+        appendASMCode("SHR 2");
+        appendASMCode("JUMP " + intToString(ASMCode.size() - 10));
+        appendASMCode("JUMP " + intToString(ASMCode.size() + 2));
+        appendASMCode("RESET 0");
+
+        setRegister(1, memoryPointer);
+        memoryPointer++;
+        appendASMCode("STORE 0 1");
+
+        (yyval.varType).memoryStart = memoryPointer - 1;
+        (yyval.varType).elementIndexAddres = -1;
+    }
+#line 1522 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 190 "compiler.y" /* yacc.c:1646  */
+#line 240 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1486,11 +1542,11 @@ yyreduce:
         appendASMCode("JZERO 0 ");
 
     }
-#line 1490 "compiler.tab.c" /* yacc.c:1646  */
+#line 1546 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 209 "compiler.y" /* yacc.c:1646  */
+#line 259 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1502,11 +1558,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1506 "compiler.tab.c" /* yacc.c:1646  */
+#line 1562 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 220 "compiler.y" /* yacc.c:1646  */
+#line 270 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1515,11 +1571,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 1 ");
     }
-#line 1519 "compiler.tab.c" /* yacc.c:1646  */
+#line 1575 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 228 "compiler.y" /* yacc.c:1646  */
+#line 278 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1528,11 +1584,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1532 "compiler.tab.c" /* yacc.c:1646  */
+#line 1588 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 236 "compiler.y" /* yacc.c:1646  */
+#line 286 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1542,11 +1598,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 1 ");
     }
-#line 1546 "compiler.tab.c" /* yacc.c:1646  */
+#line 1602 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 245 "compiler.y" /* yacc.c:1646  */
+#line 295 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1556,11 +1612,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1560 "compiler.tab.c" /* yacc.c:1646  */
+#line 1616 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 257 "compiler.y" /* yacc.c:1646  */
+#line 307 "compiler.y" /* yacc.c:1646  */
     {
         long long int numAddr = memoryPointer;
         memoryPointer++;
@@ -1572,28 +1628,28 @@ yyreduce:
         (yyval.varType).memoryStart = numAddr;
         (yyval.varType).elementIndexAddres = - 1;
     }
-#line 1576 "compiler.tab.c" /* yacc.c:1646  */
+#line 1632 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 268 "compiler.y" /* yacc.c:1646  */
+#line 318 "compiler.y" /* yacc.c:1646  */
     {(yyval.varType) = (yyvsp[0].varType);}
-#line 1582 "compiler.tab.c" /* yacc.c:1646  */
+#line 1638 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 272 "compiler.y" /* yacc.c:1646  */
+#line 322 "compiler.y" /* yacc.c:1646  */
     {
         std::string IDAsString((yyvsp[0].str));
         if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
         (yyval.varType).memoryStart = variables[IDAsString];
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1593 "compiler.tab.c" /* yacc.c:1646  */
+#line 1649 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 278 "compiler.y" /* yacc.c:1646  */
+#line 328 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         std::string ArrayCounterIDAsString((yyvsp[-1].str));
@@ -1605,11 +1661,11 @@ yyreduce:
         (yyval.varType).elementIndexAddres = variables[ArrayCounterIDAsString];
 
     }
-#line 1609 "compiler.tab.c" /* yacc.c:1646  */
+#line 1665 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 289 "compiler.y" /* yacc.c:1646  */
+#line 339 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
@@ -1617,11 +1673,11 @@ yyreduce:
         (yyval.varType).memoryStart = variables[ArrayIDAsString] + (yyvsp[-1].num);
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1621 "compiler.tab.c" /* yacc.c:1646  */
+#line 1677 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1625 "compiler.tab.c" /* yacc.c:1646  */
+#line 1681 "compiler.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1849,7 +1905,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 298 "compiler.y" /* yacc.c:1906  */
+#line 348 "compiler.y" /* yacc.c:1906  */
 
 
 int main(void) {
