@@ -57,7 +57,10 @@ long long int memoryPointer = 0;
 %%
 
 program
-    : DECLARE vdeclarations IN commands END {appendASMCode("HALT"); saveCodeToFile();}
+    : DECLARE vdeclarations IN commands END {
+        appendASMCode("HALT");
+        saveCodeToFile();
+    }
     ;
 
 vdeclarations

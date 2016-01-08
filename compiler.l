@@ -6,6 +6,7 @@
 %}
 %%
 
+\[.*\]              ;
 [_a-z]+             { yylval.str = strdup(yytext); return ID; }
 [0-9]+              { yylval.num = atoll(yytext); return NUM; }
 "DECLARE"           { return DECLARE; }
