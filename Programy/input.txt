@@ -1,10 +1,12 @@
 DECLARE
-    a
+    a b c
 IN
     a := 5;
-    IF 4 = 4 THEN
-        a:= 10;
+    b := 5;
+    c := 4;
+    IF 0 < 1 THEN
+        c := 10;
     ENDIF
 
-    PUT a;
+    PUT c;
 END

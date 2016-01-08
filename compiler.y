@@ -217,7 +217,14 @@ condition
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-    | value LESS value
+    | value LESS value{
+        loadVarToRegister($1, 0);
+        loadVarToRegister($3, 1);
+
+        appendASMCode("SUB 1 0");
+        jumpPlaces.push(ASMCode.size());
+        appendASMCode("JZERO 1 ");
+    }
     | value MORE value
     | value LESS_EQUAL value
     | value MORE_EQUAL value
