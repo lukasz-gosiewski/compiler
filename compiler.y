@@ -220,12 +220,21 @@ condition
     | value LESS value{
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);
+        appendASMCode("JZERO 1 " + intToString(ASMCode.size() + 2));
 
         appendASMCode("SUB 1 0");
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 1 ");
     }
-    | value MORE value
+    | value MORE value{
+        loadVarToRegister($1, 0);
+        loadVarToRegister($3, 1);
+        appendASMCode("JZERO 0 " + intToString(ASMCode.size() + 2));
+
+        appendASMCode("SUB 0 1");
+        jumpPlaces.push(ASMCode.size());
+        appendASMCode("JZERO 0 ");
+    }
     | value LESS_EQUAL value
     | value MORE_EQUAL value
     ;
