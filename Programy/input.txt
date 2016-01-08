@@ -1,12 +1,15 @@
 DECLARE
-    a
+    a b
 IN
-    a := 0;
+    GET a;
+    WHILE a > 0 DO
+        b := a / 2;
+        b := 2 * b;
+        
+        IF a > b THEN PUT 1;
+        ELSE PUT 0;
+        ENDIF
 
-    WHILE a < 10 DO
-        a := a + 1;
-        PUT a;
+        a := a / 2;
     ENDWHILE
-
-    PUT a;
 END

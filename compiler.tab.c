@@ -475,9 +475,9 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    60,    60,    64,    69,    74,    78,    79,    83,   103,
-     108,   108,   108,   119,   126,   127,   128,   141,   148,   151,
-     163,   174,   195,   231,   269,   288,   299,   308,   316,   325,
-     337,   348,   352,   358,   369
+     108,   108,   108,   118,   125,   126,   127,   140,   147,   150,
+     162,   173,   194,   230,   268,   288,   300,   309,   318,   328,
+     341,   352,   356,   362,   373
 };
 #endif
 
@@ -1380,25 +1380,24 @@ yyreduce:
     {
             ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
             jumpPlaces.pop();
-            jumpPlaces.pop();
             jumpPlaces.push(ASMCode.size());
             appendASMCode("JUMP ");
         }
-#line 1388 "compiler.tab.c" /* yacc.c:1646  */
+#line 1387 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 114 "compiler.y" /* yacc.c:1646  */
+#line 113 "compiler.y" /* yacc.c:1646  */
     {
             ASMCode[jumpPlaces.top()] += intToString(ASMCode.size());
             jumpPlaces.pop();
             jumpPlaces.pop();
         }
-#line 1398 "compiler.tab.c" /* yacc.c:1646  */
+#line 1397 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 119 "compiler.y" /* yacc.c:1646  */
+#line 118 "compiler.y" /* yacc.c:1646  */
     {
         ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
         jumpPlaces.pop();
@@ -1406,11 +1405,11 @@ yyreduce:
         appendASMCode("JUMP " + intToString(jumpPlaces.top()));
         jumpPlaces.pop();
     }
-#line 1410 "compiler.tab.c" /* yacc.c:1646  */
+#line 1409 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 128 "compiler.y" /* yacc.c:1646  */
+#line 127 "compiler.y" /* yacc.c:1646  */
     {
         if((yyvsp[-1].varType).elementIndexAddres == -1) setRegister(1, (yyvsp[-1].varType).memoryStart);
         else{
@@ -1424,28 +1423,28 @@ yyreduce:
         appendASMCode("STORE 0 1");
 
     }
-#line 1428 "compiler.tab.c" /* yacc.c:1646  */
+#line 1427 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 141 "compiler.y" /* yacc.c:1646  */
+#line 140 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-1].varType), 0);
         appendASMCode("WRITE 0");
     }
-#line 1437 "compiler.tab.c" /* yacc.c:1646  */
+#line 1436 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 148 "compiler.y" /* yacc.c:1646  */
+#line 147 "compiler.y" /* yacc.c:1646  */
     {
         (yyval.varType) = (yyvsp[0].varType);
     }
-#line 1445 "compiler.tab.c" /* yacc.c:1646  */
+#line 1444 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 151 "compiler.y" /* yacc.c:1646  */
+#line 150 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1458,11 +1457,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1462 "compiler.tab.c" /* yacc.c:1646  */
+#line 1461 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 163 "compiler.y" /* yacc.c:1646  */
+#line 162 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1474,11 +1473,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1478 "compiler.tab.c" /* yacc.c:1646  */
+#line 1477 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 174 "compiler.y" /* yacc.c:1646  */
+#line 173 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1500,11 +1499,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1504 "compiler.tab.c" /* yacc.c:1646  */
+#line 1503 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 195 "compiler.y" /* yacc.c:1646  */
+#line 194 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1541,11 +1540,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1545 "compiler.tab.c" /* yacc.c:1646  */
+#line 1544 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 231 "compiler.y" /* yacc.c:1646  */
+#line 230 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1581,12 +1580,13 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1585 "compiler.tab.c" /* yacc.c:1646  */
+#line 1584 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 269 "compiler.y" /* yacc.c:1646  */
+#line 268 "compiler.y" /* yacc.c:1646  */
     {
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
 
@@ -1611,6 +1611,7 @@ yyreduce:
   case 25:
 #line 288 "compiler.y" /* yacc.c:1646  */
     {
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
 
@@ -1621,13 +1622,13 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1625 "compiler.tab.c" /* yacc.c:1646  */
+#line 1626 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 299 "compiler.y" /* yacc.c:1646  */
+#line 300 "compiler.y" /* yacc.c:1646  */
     {
-        jumpPlaces.push(ASMCode.size() + 1);
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
 
@@ -1635,12 +1636,13 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 1 ");
     }
-#line 1639 "compiler.tab.c" /* yacc.c:1646  */
+#line 1640 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 308 "compiler.y" /* yacc.c:1646  */
+#line 309 "compiler.y" /* yacc.c:1646  */
     {
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
 
@@ -1648,12 +1650,13 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1652 "compiler.tab.c" /* yacc.c:1646  */
+#line 1654 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 316 "compiler.y" /* yacc.c:1646  */
+#line 318 "compiler.y" /* yacc.c:1646  */
     {
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
 
@@ -1662,12 +1665,13 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 1 ");
     }
-#line 1666 "compiler.tab.c" /* yacc.c:1646  */
+#line 1669 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 325 "compiler.y" /* yacc.c:1646  */
+#line 328 "compiler.y" /* yacc.c:1646  */
     {
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
 
@@ -1676,11 +1680,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1680 "compiler.tab.c" /* yacc.c:1646  */
+#line 1684 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 337 "compiler.y" /* yacc.c:1646  */
+#line 341 "compiler.y" /* yacc.c:1646  */
     {
         long long int numAddr = memoryPointer;
         memoryPointer++;
@@ -1692,28 +1696,28 @@ yyreduce:
         (yyval.varType).memoryStart = numAddr;
         (yyval.varType).elementIndexAddres = - 1;
     }
-#line 1696 "compiler.tab.c" /* yacc.c:1646  */
+#line 1700 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 348 "compiler.y" /* yacc.c:1646  */
+#line 352 "compiler.y" /* yacc.c:1646  */
     {(yyval.varType) = (yyvsp[0].varType);}
-#line 1702 "compiler.tab.c" /* yacc.c:1646  */
+#line 1706 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 352 "compiler.y" /* yacc.c:1646  */
+#line 356 "compiler.y" /* yacc.c:1646  */
     {
         std::string IDAsString((yyvsp[0].str));
         if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
         (yyval.varType).memoryStart = variables[IDAsString];
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1713 "compiler.tab.c" /* yacc.c:1646  */
+#line 1717 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 358 "compiler.y" /* yacc.c:1646  */
+#line 362 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         std::string ArrayCounterIDAsString((yyvsp[-1].str));
@@ -1725,11 +1729,11 @@ yyreduce:
         (yyval.varType).elementIndexAddres = variables[ArrayCounterIDAsString];
 
     }
-#line 1729 "compiler.tab.c" /* yacc.c:1646  */
+#line 1733 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 369 "compiler.y" /* yacc.c:1646  */
+#line 373 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
@@ -1737,11 +1741,11 @@ yyreduce:
         (yyval.varType).memoryStart = variables[ArrayIDAsString] + (yyvsp[-1].num);
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1741 "compiler.tab.c" /* yacc.c:1646  */
+#line 1745 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1745 "compiler.tab.c" /* yacc.c:1646  */
+#line 1749 "compiler.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1969,7 +1973,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 378 "compiler.y" /* yacc.c:1906  */
+#line 382 "compiler.y" /* yacc.c:1906  */
 
 
 int main(void) {

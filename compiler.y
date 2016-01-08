@@ -108,7 +108,6 @@ command
     | IF condition THEN commands{} ELSE{
             ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
             jumpPlaces.pop();
-            jumpPlaces.pop();
             jumpPlaces.push(ASMCode.size());
             appendASMCode("JUMP ");
         } commands ENDIF{
@@ -267,6 +266,7 @@ expression
 
 condition
     : value EQUAL value{
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);
 
@@ -286,6 +286,7 @@ condition
 
     }
     | value DIFF value{
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);
 
@@ -297,7 +298,7 @@ condition
         appendASMCode("JZERO 0 ");
     }
     | value LESS value{
-        jumpPlaces.push(ASMCode.size() + 1);
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);
 
@@ -306,6 +307,7 @@ condition
         appendASMCode("JZERO 1 ");
     }
     | value MORE value{
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);
 
@@ -314,6 +316,7 @@ condition
         appendASMCode("JZERO 0 ");
     }
     | value LESS_EQUAL value{
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);
 
@@ -323,6 +326,7 @@ condition
         appendASMCode("JZERO 1 ");
     }
     | value MORE_EQUAL value{
+        jumpPlaces.push(ASMCode.size());
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);
 
