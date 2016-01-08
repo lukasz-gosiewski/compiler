@@ -7,7 +7,7 @@
 %%
 
 [_a-z]+             { yylval.str = strdup(yytext); return ID; }
-[0-9]+              { yylval.num = atoi(yytext); return NUM; }
+[0-9]+              { yylval.num = atoll(yytext); return NUM; }
 "DECLARE"           { return DECLARE; }
 "IN"                { return IN; }
 "END"               { return END; }

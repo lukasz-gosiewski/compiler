@@ -187,7 +187,25 @@ expression
     ;
 
 condition
-    : value EQUAL value
+    : value EQUAL value{
+        loadVarToRegister($1, 0);
+        loadVarToRegister($3, 1);
+
+        appendASMCode("COPY 2 1");
+        appendASMCode("SUB 1 0");
+        appendASMCode("SUB 0 2");
+        appendASMCode("ADD 0 1");
+
+        std::string targetLine = intToString(ASMCode.size() + 3);
+        appendASMCode("JZERO 0 " + targetLine);
+        appendASMCode("RESET 0");
+        targetLine = intToString(ASMCode.size() + 2);
+        appendASMCode("JUMP " + targetLine);
+        appendASMCode("INC 0");
+        jumpPlaces.push(ASMCode.size());
+        appendASMCode("JZERO 0 ");
+
+    }
     | value DIFF value{
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);

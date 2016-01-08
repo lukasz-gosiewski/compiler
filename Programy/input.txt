@@ -1,9 +1,9 @@
 DECLARE
     a
 IN
-    a := 2;
-    IF 0 != 1 THEN
-        a := 5;
+    a := 5;
+    IF 4 = 4 THEN
+        a:= 10;
     ENDIF
 
     PUT a;
