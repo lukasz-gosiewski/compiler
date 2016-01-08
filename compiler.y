@@ -143,22 +143,22 @@ expression
         $$.elementIndexAddres = -1;
     }
     | value MULT value{
-        //TODO: Usprawnic ten algorytm
         loadVarToRegister($1, 0);
         loadVarToRegister($3, 1);
+        appendASMCode("RESET 2");
 
-        setRegister(2, 1);
-        appendASMCode("COPY 3 0");
-        appendASMCode("RESET 0");
-        long long int startingASMLine = ASMCode.size();
-        appendASMCode("ADD 0 3");
-        appendASMCode("SUB 1 2");
-        long long int finishASMLine = ASMCode.size() + 3;
-        appendASMCode("JZERO 1 " + intToString(finishASMLine));
-        appendASMCode("JUMP " + intToString(startingASMLine));
-        setRegister(1, memoryPointer);
+        appendASMCode("JODD 1 " + intToString(ASMCode.size() + 5));
+        appendASMCode("SHL 0");
+        appendASMCode("SHR 1");
+        appendASMCode("JZERO 1 " + intToString(ASMCode.size() + 5));
+        appendASMCode("JUMP " + intToString(ASMCode.size() - 4));
+        appendASMCode("ADD 2 0");
+        appendASMCode("DEC 1");
+        appendASMCode("JUMP " + intToString(ASMCode.size() - 6));
+
+        setRegister(0, memoryPointer);
         memoryPointer++;
-        appendASMCode("STORE 0 1");
+        appendASMCode("STORE 2 0");
 
         $$.memoryStart = memoryPointer - 1;
         $$.elementIndexAddres = -1;
