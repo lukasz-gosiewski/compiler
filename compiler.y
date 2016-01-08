@@ -108,7 +108,19 @@ command
     | WHILE condition DO commands ENDWHILE
     | FOR ID FROM value TO value DO commands ENDFOR
     | FOR ID DOWN FROM value TO value DO commands ENDFOR
-    | GET identifier SEMICOLON
+    | GET identifier SEMICOLON{
+        if($2.elementIndexAddres == -1) setRegister(1, $2.memoryStart);
+        else{
+            setRegister(1, $2.memoryStart);
+            setRegister(2, $2.elementIndexAddres);
+            appendASMCode("LOAD 3 2");
+            appendASMCode("ADD 1 3");
+        }
+
+        appendASMCode("READ 0");
+        appendASMCode("STORE 0 1");
+
+    }
     | PUT value SEMICOLON{
         loadVarToRegister($2, 0);
         appendASMCode("WRITE 0");

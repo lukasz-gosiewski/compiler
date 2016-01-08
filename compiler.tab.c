@@ -475,9 +475,9 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    60,    60,    64,    69,    74,    78,    79,    83,   103,
-     107,   108,   109,   110,   111,   112,   119,   122,   134,   145,
-     166,   202,   240,   259,   270,   278,   286,   295,   307,   318,
-     322,   328,   339
+     107,   108,   109,   110,   111,   124,   131,   134,   146,   157,
+     178,   214,   252,   271,   282,   290,   298,   307,   319,   330,
+     334,   340,   351
 };
 #endif
 
@@ -1364,25 +1364,43 @@ yyreduce:
 #line 1365 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
+  case 14:
+#line 111 "compiler.y" /* yacc.c:1646  */
+    {
+        if((yyvsp[-1].varType).elementIndexAddres == -1) setRegister(1, (yyvsp[-1].varType).memoryStart);
+        else{
+            setRegister(1, (yyvsp[-1].varType).memoryStart);
+            setRegister(2, (yyvsp[-1].varType).elementIndexAddres);
+            appendASMCode("LOAD 3 2");
+            appendASMCode("ADD 1 3");
+        }
+
+        appendASMCode("READ 0");
+        appendASMCode("STORE 0 1");
+
+    }
+#line 1383 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
   case 15:
-#line 112 "compiler.y" /* yacc.c:1646  */
+#line 124 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-1].varType), 0);
         appendASMCode("WRITE 0");
     }
-#line 1374 "compiler.tab.c" /* yacc.c:1646  */
+#line 1392 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 119 "compiler.y" /* yacc.c:1646  */
+#line 131 "compiler.y" /* yacc.c:1646  */
     {
         (yyval.varType) = (yyvsp[0].varType);
     }
-#line 1382 "compiler.tab.c" /* yacc.c:1646  */
+#line 1400 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 122 "compiler.y" /* yacc.c:1646  */
+#line 134 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1395,11 +1413,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1399 "compiler.tab.c" /* yacc.c:1646  */
+#line 1417 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 134 "compiler.y" /* yacc.c:1646  */
+#line 146 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1411,11 +1429,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1415 "compiler.tab.c" /* yacc.c:1646  */
+#line 1433 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 145 "compiler.y" /* yacc.c:1646  */
+#line 157 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1437,11 +1455,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1441 "compiler.tab.c" /* yacc.c:1646  */
+#line 1459 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 166 "compiler.y" /* yacc.c:1646  */
+#line 178 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1478,11 +1496,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1482 "compiler.tab.c" /* yacc.c:1646  */
+#line 1500 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 202 "compiler.y" /* yacc.c:1646  */
+#line 214 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1518,11 +1536,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1522 "compiler.tab.c" /* yacc.c:1646  */
+#line 1540 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 240 "compiler.y" /* yacc.c:1646  */
+#line 252 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1542,11 +1560,11 @@ yyreduce:
         appendASMCode("JZERO 0 ");
 
     }
-#line 1546 "compiler.tab.c" /* yacc.c:1646  */
+#line 1564 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 259 "compiler.y" /* yacc.c:1646  */
+#line 271 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1558,11 +1576,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1562 "compiler.tab.c" /* yacc.c:1646  */
+#line 1580 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 270 "compiler.y" /* yacc.c:1646  */
+#line 282 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1571,11 +1589,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 1 ");
     }
-#line 1575 "compiler.tab.c" /* yacc.c:1646  */
+#line 1593 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 278 "compiler.y" /* yacc.c:1646  */
+#line 290 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1584,11 +1602,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1588 "compiler.tab.c" /* yacc.c:1646  */
+#line 1606 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 286 "compiler.y" /* yacc.c:1646  */
+#line 298 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1598,11 +1616,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 1 ");
     }
-#line 1602 "compiler.tab.c" /* yacc.c:1646  */
+#line 1620 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 295 "compiler.y" /* yacc.c:1646  */
+#line 307 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1612,11 +1630,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1616 "compiler.tab.c" /* yacc.c:1646  */
+#line 1634 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 307 "compiler.y" /* yacc.c:1646  */
+#line 319 "compiler.y" /* yacc.c:1646  */
     {
         long long int numAddr = memoryPointer;
         memoryPointer++;
@@ -1628,28 +1646,28 @@ yyreduce:
         (yyval.varType).memoryStart = numAddr;
         (yyval.varType).elementIndexAddres = - 1;
     }
-#line 1632 "compiler.tab.c" /* yacc.c:1646  */
+#line 1650 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 318 "compiler.y" /* yacc.c:1646  */
+#line 330 "compiler.y" /* yacc.c:1646  */
     {(yyval.varType) = (yyvsp[0].varType);}
-#line 1638 "compiler.tab.c" /* yacc.c:1646  */
+#line 1656 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 322 "compiler.y" /* yacc.c:1646  */
+#line 334 "compiler.y" /* yacc.c:1646  */
     {
         std::string IDAsString((yyvsp[0].str));
         if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
         (yyval.varType).memoryStart = variables[IDAsString];
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1649 "compiler.tab.c" /* yacc.c:1646  */
+#line 1667 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 328 "compiler.y" /* yacc.c:1646  */
+#line 340 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         std::string ArrayCounterIDAsString((yyvsp[-1].str));
@@ -1661,11 +1679,11 @@ yyreduce:
         (yyval.varType).elementIndexAddres = variables[ArrayCounterIDAsString];
 
     }
-#line 1665 "compiler.tab.c" /* yacc.c:1646  */
+#line 1683 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 339 "compiler.y" /* yacc.c:1646  */
+#line 351 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
@@ -1673,11 +1691,11 @@ yyreduce:
         (yyval.varType).memoryStart = variables[ArrayIDAsString] + (yyvsp[-1].num);
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1677 "compiler.tab.c" /* yacc.c:1646  */
+#line 1695 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1681 "compiler.tab.c" /* yacc.c:1646  */
+#line 1699 "compiler.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1905,7 +1923,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 348 "compiler.y" /* yacc.c:1906  */
+#line 360 "compiler.y" /* yacc.c:1906  */
 
 
 int main(void) {

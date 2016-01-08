@@ -1,6 +1,7 @@
 DECLARE
-    a
+    a(10)
 IN
-    a := 0 * 1;
-    PUT a;
+    GET a(2);
+    GET a(3);
+    PUT a(2);
 END
