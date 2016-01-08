@@ -476,8 +476,8 @@ static const yytype_uint16 yyrline[] =
 {
        0,    60,    60,    64,    69,    74,    78,    79,    83,   103,
      107,   108,   109,   110,   111,   112,   119,   122,   134,   145,
-     166,   186,   190,   209,   220,   229,   238,   239,   243,   254,
-     258,   264,   275
+     166,   186,   190,   209,   220,   228,   236,   245,   249,   260,
+     264,   270,   281
 };
 #endif
 
@@ -1510,31 +1510,43 @@ yyreduce:
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
-        appendASMCode("JZERO 1 " + intToString(ASMCode.size() + 2));
 
         appendASMCode("SUB 1 0");
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 1 ");
     }
-#line 1520 "compiler.tab.c" /* yacc.c:1646  */
+#line 1519 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 229 "compiler.y" /* yacc.c:1646  */
+#line 228 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
-        appendASMCode("JZERO 0 " + intToString(ASMCode.size() + 2));
 
         appendASMCode("SUB 0 1");
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1534 "compiler.tab.c" /* yacc.c:1646  */
+#line 1532 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 26:
+#line 236 "compiler.y" /* yacc.c:1646  */
+    {
+        loadVarToRegister((yyvsp[-2].varType), 0);
+        loadVarToRegister((yyvsp[0].varType), 1);
+
+        appendASMCode("INC 1");
+        appendASMCode("SUB 1 0");
+        jumpPlaces.push(ASMCode.size());
+        appendASMCode("JZERO 1 ");
+    }
+#line 1546 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 243 "compiler.y" /* yacc.c:1646  */
+#line 249 "compiler.y" /* yacc.c:1646  */
     {
         long long int numAddr = memoryPointer;
         memoryPointer++;
@@ -1546,28 +1558,28 @@ yyreduce:
         (yyval.varType).memoryStart = numAddr;
         (yyval.varType).elementIndexAddres = - 1;
     }
-#line 1550 "compiler.tab.c" /* yacc.c:1646  */
+#line 1562 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 254 "compiler.y" /* yacc.c:1646  */
+#line 260 "compiler.y" /* yacc.c:1646  */
     {(yyval.varType) = (yyvsp[0].varType);}
-#line 1556 "compiler.tab.c" /* yacc.c:1646  */
+#line 1568 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 258 "compiler.y" /* yacc.c:1646  */
+#line 264 "compiler.y" /* yacc.c:1646  */
     {
         std::string IDAsString((yyvsp[0].str));
         if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
         (yyval.varType).memoryStart = variables[IDAsString];
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1567 "compiler.tab.c" /* yacc.c:1646  */
+#line 1579 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 264 "compiler.y" /* yacc.c:1646  */
+#line 270 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         std::string ArrayCounterIDAsString((yyvsp[-1].str));
@@ -1579,11 +1591,11 @@ yyreduce:
         (yyval.varType).elementIndexAddres = variables[ArrayCounterIDAsString];
 
     }
-#line 1583 "compiler.tab.c" /* yacc.c:1646  */
+#line 1595 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 275 "compiler.y" /* yacc.c:1646  */
+#line 281 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
@@ -1591,11 +1603,11 @@ yyreduce:
         (yyval.varType).memoryStart = variables[ArrayIDAsString] + (yyvsp[-1].num);
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1595 "compiler.tab.c" /* yacc.c:1646  */
+#line 1607 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1599 "compiler.tab.c" /* yacc.c:1646  */
+#line 1611 "compiler.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1823,7 +1835,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 284 "compiler.y" /* yacc.c:1906  */
+#line 290 "compiler.y" /* yacc.c:1906  */
 
 
 int main(void) {
