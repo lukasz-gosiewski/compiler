@@ -15,7 +15,12 @@ typedef struct{
     long long int elementIndexAddres;
 } VarType;
 
-extern std::map<std::string, long long int>  variables;
+typedef struct{
+    std::string name;
+    VarType memoryAdress;
+} CustomVariable;
+
+extern std::vector<CustomVariable>  variables;
 extern std::vector<std::string> ASMCode;
 extern std::stack<long long int> jumpPlaces;
 extern long long int memoryPointer;
@@ -34,5 +39,6 @@ std::string intToString(long long int value);
 std::string binary(long long int x);
 void saveCodeToFile();
 void loadVarToRegister(VarType var, int registerNumber);
+CustomVariable findVarByName(std::string name);
 
 #endif

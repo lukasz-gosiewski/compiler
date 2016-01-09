@@ -78,7 +78,8 @@ extern int yydebug;
     LEFT_PAR = 288,
     RIGHT_PAR = 289,
     ID = 290,
-    NUM = 291
+    IID = 291,
+    NUM = 292
   };
 #endif
 
@@ -93,7 +94,7 @@ union YYSTYPE
     long long int num;
     VarType varType;
 
-#line 97 "compiler.tab.h" /* yacc.c:1909  */
+#line 98 "compiler.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

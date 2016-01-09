@@ -1,6 +1,6 @@
 #include "compiler.h"
 
-extern std::map<std::string, long long int>  variables;
+extern std::vector<CustomVariable>  variables;
 extern std::vector<std::string> ASMCode;
 extern std::stack<long long int> jumpPlaces;
 extern long long int memoryPointer;
@@ -21,18 +21,29 @@ void showASMCode(){
 }
 
 void declareVariable(std::string var){
-    variables[var] = memoryPointer;
+	CustomVariable vari;
+	vari.memoryAdress.memoryStart = memoryPointer;
+	vari.memoryAdress.elementIndexAddres = -1;
+	vari.name = var;
+	variables.push_back(vari);
     memoryPointer++;
 }
 
 void declareArray(std::string array, long long int size){
-    variables[array] = memoryPointer;
+	CustomVariable var;
+	var.memoryAdress.memoryStart = memoryPointer;
+	var.memoryAdress.elementIndexAddres = 0;
+	var.name = array;
+	variables.push_back(var);
     memoryPointer += size;
 }
 
 bool isVariableDeclared(std::string var){
-    std::map<std::string, long long int>::iterator it = variables.find(var);
-    return ( it != variables.end() );
+
+	for(int i = 0; i < variables.size(); i++){
+		if(variables[i].name == var) return true;
+	}
+	return false;
 }
 
 void setRegister(int registerNumber, long long int value){
@@ -82,4 +93,10 @@ void loadVarToRegister(VarType var, int registerNumber){
         appendASMCode("ADD " + intToString(registerNumber+1) + " " + intToString(registerNumber+3));
     }
     appendASMCode("LOAD " + intToString(registerNumber) + " " + intToString(registerNumber+1));
+}
+
+CustomVariable findVarByName(std::string name){
+	for(int i = 0; i < variables.size(); i++){
+		if(variables[i].name == name) return variables[i];
+	}
 }

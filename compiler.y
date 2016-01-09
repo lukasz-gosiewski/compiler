@@ -2,7 +2,7 @@
 
 #include "compiler.h"
 
-std::map<std::string, long long int>  variables;
+std::vector<CustomVariable>  variables;
 std::vector<std::string> ASMCode;
 std::stack<long long int> jumpPlaces;
 long long int memoryPointer = 0;
@@ -48,6 +48,7 @@ long long int memoryPointer = 0;
 %token LEFT_PAR
 %token RIGHT_PAR
 %token <str> ID
+%token <str> IID
 %token <num> NUM
 %type <varType> expression
 %type <varType> identifier
@@ -125,8 +126,8 @@ command
         appendASMCode("JUMP " + intToString(jumpPlaces.top()));
         jumpPlaces.pop();
     }
-    | FOR ID FROM value TO value DO commands ENDFOR
-    | FOR ID DOWN FROM value TO value DO commands ENDFOR
+    | FOR iterator FROM value TO value DO commands ENDFOR
+    | FOR iterator DOWN FROM value TO value DO commands ENDFOR
     | GET identifier SEMICOLON{
         if($2.elementIndexAddres == -1) setRegister(1, $2.memoryStart);
         else{
@@ -359,7 +360,7 @@ identifier
     : ID {
         std::string IDAsString($1);
         if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
-        $$.memoryStart = variables[IDAsString];
+        $$.memoryStart = findVarByName(IDAsString).memoryAdress.memoryStart;
         $$.elementIndexAddres = -1;
     }
     | ID LEFT_PAR ID RIGHT_PAR{
@@ -369,18 +370,23 @@ identifier
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
         if(!isVariableDeclared(ArrayCounterIDAsString)) yyerror(ArrayCounterIDAsString + " is undeclared");
 
-        $$.memoryStart = variables[ArrayIDAsString];
-        $$.elementIndexAddres = variables[ArrayCounterIDAsString];
+        $$.memoryStart = findVarByName(ArrayIDAsString).memoryAdress.memoryStart;
+        $$.elementIndexAddres = findVarByName(ArrayIDAsString).memoryAdress.elementIndexAddres;
 
     }
     | ID LEFT_PAR NUM RIGHT_PAR{
         std::string ArrayIDAsString($1);
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
 
-        $$.memoryStart = variables[ArrayIDAsString] + $3;
+        $$.memoryStart = findVarByName(ArrayIDAsString).memoryAdress.memoryStart + $3;
         $$.elementIndexAddres = -1;
     }
     ;
+
+iterator
+    : {
+
+    }
 
 %%
 
