@@ -17,7 +17,7 @@ typedef struct{
 
 typedef struct{
     std::string name;
-    VarType memoryAdress;
+    long long int memoryAdress;
     bool isIterator;
 } CustomVariable;
 
@@ -49,6 +49,6 @@ std::string binary(long long int x);
 void saveCodeToFile();
 void loadVarToRegister(VarType var, int registerNumber);
 CustomVariable findVarByName(std::string name);
-bool isIterator(VarType var);
+bool isIterator(long long int addr);
 
 #endif

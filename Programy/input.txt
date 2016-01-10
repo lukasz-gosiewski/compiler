@@ -1,8 +1,11 @@
 DECLARE
-	tab(20)
+	a(10)
 IN
-    FOR i FROM 5 TO 11 DO
-        tab(i) := i;
-        PUT tab(i);
+	FOR i DOWN FROM 7 TO 0 DO
+        a(i) := i;
+    ENDFOR
+
+    FOR i DOWN FROM 7 TO 0 DO
+        PUT a(i);
     ENDFOR
 END

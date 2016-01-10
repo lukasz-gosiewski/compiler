@@ -86,7 +86,7 @@ commands
 
 command
     : identifier ASSIGN expression SEMICOLON{
-        if(isIterator($1)) yyerror("You cannot modify iterator");
+        if(isIterator($1.memoryStart)) yyerror("You cannot modify iterator");
         if($1.elementIndexAddres == -1) setRegister(0, $1.memoryStart);
         else{
             setRegister(0, $1.memoryStart);
@@ -136,8 +136,8 @@ command
         loadVarToRegister($4, 0);
         loadVarToRegister($6, 1);
 
-        appendASMCode("SUB 1 0");
         appendASMCode("INC 1");
+        appendASMCode("SUB 1 0");
         setRegister(0, memoryPointer);
         appendASMCode("STORE 1 0");
         iterators.top().iterationsToFinishAddr = memoryPointer;
@@ -168,7 +168,46 @@ command
         variables.erase(variables.begin() + iterators.top().placeInVector);
         iterators.pop();
     }
-    | FOR iterator DOWN FROM value TO value DO commands ENDFOR
+    | FOR iterator DOWN FROM value TO value{
+        loadVarToRegister($5, 0);
+        setRegister(1, iterators.top().memoryAdress);
+        appendASMCode("STORE 0 1");
+
+        loadVarToRegister($5, 0);
+        loadVarToRegister($7, 1);
+
+        appendASMCode("INC 0");
+        appendASMCode("SUB 0 1");
+        setRegister(1, memoryPointer);
+        appendASMCode("STORE 0 1");
+        iterators.top().iterationsToFinishAddr = memoryPointer;
+        memoryPointer++;
+
+        jumpPlaces.push(ASMCode.size());
+        setRegister(1, iterators.top().iterationsToFinishAddr);
+        appendASMCode("LOAD 0 1");
+        jumpPlaces.push(ASMCode.size());
+        appendASMCode("JZERO 0 ");
+
+        appendASMCode("DEC 0");
+        setRegister(1, iterators.top().iterationsToFinishAddr);
+        appendASMCode("STORE 0 1");
+    }
+    DO commands ENDFOR{
+        setRegister(1, iterators.top().memoryAdress);
+        appendASMCode("LOAD 0 1");
+        appendASMCode("DEC 0");
+        setRegister(1, iterators.top().memoryAdress);
+        appendASMCode("STORE 0 1");
+
+        ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
+        jumpPlaces.pop();
+        appendASMCode("JUMP " + intToString(jumpPlaces.top()));
+        jumpPlaces.pop();
+
+        variables.erase(variables.begin() + iterators.top().placeInVector);
+        iterators.pop();
+    }
     | GET identifier SEMICOLON{
         if($2.elementIndexAddres == -1) setRegister(1, $2.memoryStart);
         else{
@@ -401,7 +440,7 @@ identifier
     : ID {
         std::string IDAsString($1);
         if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
-        $$.memoryStart = findVarByName(IDAsString).memoryAdress.memoryStart;
+        $$.memoryStart = findVarByName(IDAsString).memoryAdress;
         $$.elementIndexAddres = -1;
     }
     | ID LEFT_PAR ID RIGHT_PAR{
@@ -411,15 +450,15 @@ identifier
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
         if(!isVariableDeclared(ArrayCounterIDAsString)) yyerror(ArrayCounterIDAsString + " is undeclared");
 
-        $$.memoryStart = findVarByName(ArrayIDAsString).memoryAdress.memoryStart;
-        $$.elementIndexAddres = findVarByName(ArrayIDAsString).memoryAdress.elementIndexAddres;
+        $$.memoryStart = findVarByName(ArrayIDAsString).memoryAdress;
+        $$.elementIndexAddres = findVarByName(ArrayCounterIDAsString).memoryAdress;
 
     }
     | ID LEFT_PAR NUM RIGHT_PAR{
         std::string ArrayIDAsString($1);
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
 
-        $$.memoryStart = findVarByName(ArrayIDAsString).memoryAdress.memoryStart + $3;
+        $$.memoryStart = findVarByName(ArrayIDAsString).memoryAdress + $3;
         $$.elementIndexAddres = -1;
     }
     ;
@@ -427,8 +466,7 @@ identifier
 iterator
     : ID {
         CustomVariable var;
-        var.memoryAdress.memoryStart = memoryPointer;
-        var.memoryAdress.elementIndexAddres = -1;
+        var.memoryAdress = memoryPointer;
         var.name = $1;
         memoryPointer++;
         var.isIterator = true;

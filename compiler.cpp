@@ -23,8 +23,7 @@ void showASMCode(){
 
 void declareVariable(std::string var){
 	CustomVariable vari;
-	vari.memoryAdress.memoryStart = memoryPointer;
-	vari.memoryAdress.elementIndexAddres = -1;
+	vari.memoryAdress = memoryPointer;
 	vari.name = var;
 	vari.isIterator = false;
 	variables.push_back(vari);
@@ -33,8 +32,7 @@ void declareVariable(std::string var){
 
 void declareArray(std::string array, long long int size){
 	CustomVariable var;
-	var.memoryAdress.memoryStart = memoryPointer;
-	var.memoryAdress.elementIndexAddres = 0;
+	var.memoryAdress = memoryPointer;
 	var.name = array;
 	var.isIterator = false;
 	variables.push_back(var);
@@ -99,14 +97,14 @@ void loadVarToRegister(VarType var, int registerNumber){
 }
 
 CustomVariable findVarByName(std::string name){
-	for(int i = variables.size() - 1; i >= 0; i--){
+	for(int i = variables.size(); i >= 0; i--){
 		if(variables[i].name == name) return variables[i];
 	}
 }
 
-bool isIterator(VarType var){
+bool isIterator(long long var){
 	for(int i = variables.size() -1; i >= 0; i--){
-		if(var.memoryStart == variables[i].memoryAdress.memoryStart && var.elementIndexAddres == variables[i].memoryAdress.elementIndexAddres && variables[i].isIterator == true) {
+		if(var == variables[i].memoryAdress && variables[i].isIterator == true) {
 			return true;
 		}
 	}
