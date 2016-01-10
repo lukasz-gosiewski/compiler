@@ -18,7 +18,9 @@ typedef struct{
 typedef struct{
     std::string name;
     long long int memoryAdress;
+    bool isInit;
     bool isIterator;
+    bool isArray;
 } CustomVariable;
 
 typedef struct{
@@ -50,5 +52,9 @@ void saveCodeToFile();
 void loadVarToRegister(VarType var, int registerNumber);
 CustomVariable findVarByName(std::string name);
 bool isIterator(long long int addr);
+void setInitialized(long long int var);
+bool isVariableInitialized(long long int var);
+std::string findVariableNameByAddr(long long int var);
+bool isArray(std::string name);
 
 #endif

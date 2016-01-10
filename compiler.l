@@ -6,7 +6,7 @@
 %}
 %%
 
-\[.*\]              ;
+\[[^\]]*\]          ;
 [_a-z]+             { yylval.str = strdup(yytext); return ID; }
 [0-9]+              { yylval.num = atoll(yytext); return NUM; }
 "DECLARE"           { return DECLARE; }
@@ -42,7 +42,7 @@
 "("                 { return LEFT_PAR; }
 ")"                 { return RIGHT_PAR; }
 [ \t\n]             ;
-.                   ;
+.                   {printf("Nierozpoznany ciag znakow."); exit(1);}
 
 %%
 int yywrap(void) {

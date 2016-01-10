@@ -87,6 +87,7 @@ commands
 command
     : identifier ASSIGN expression SEMICOLON{
         if(isIterator($1.memoryStart)) yyerror("You cannot modify iterator");
+        setInitialized($1.memoryStart);
         if($1.elementIndexAddres == -1) setRegister(0, $1.memoryStart);
         else{
             setRegister(0, $1.memoryStart);
@@ -209,6 +210,7 @@ command
         iterators.pop();
     }
     | GET identifier SEMICOLON{
+        setInitialized($2.memoryStart);
         if($2.elementIndexAddres == -1) setRegister(1, $2.memoryStart);
         else{
             setRegister(1, $2.memoryStart);
@@ -433,13 +435,21 @@ value
         $$.memoryStart = numAddr;
         $$.elementIndexAddres = - 1;
     }
-    | identifier {$$ = $1;}
+    | identifier {
+        if(!isVariableInitialized($1.memoryStart)){
+            std::string name = findVariableNameByAddr($1.memoryStart);
+            yyerror("Using uninitialized variable - " + name);
+            }
+        $$ = $1;
+    }
     ;
 
 identifier
     : ID {
         std::string IDAsString($1);
         if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
+        if(isArray(IDAsString)) yyerror(IDAsString + " is an array");
+
         $$.memoryStart = findVarByName(IDAsString).memoryAdress;
         $$.elementIndexAddres = -1;
     }
@@ -449,6 +459,7 @@ identifier
 
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
         if(!isVariableDeclared(ArrayCounterIDAsString)) yyerror(ArrayCounterIDAsString + " is undeclared");
+        if(!isArray(ArrayIDAsString)) yyerror(ArrayIDAsString + " is not an array");
 
         $$.memoryStart = findVarByName(ArrayIDAsString).memoryAdress;
         $$.elementIndexAddres = findVarByName(ArrayCounterIDAsString).memoryAdress;
@@ -457,6 +468,7 @@ identifier
     | ID LEFT_PAR NUM RIGHT_PAR{
         std::string ArrayIDAsString($1);
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
+        if(!isArray(ArrayIDAsString)) yyerror(ArrayIDAsString + " is not an array");
 
         $$.memoryStart = findVarByName(ArrayIDAsString).memoryAdress + $3;
         $$.elementIndexAddres = -1;
@@ -468,8 +480,10 @@ iterator
         CustomVariable var;
         var.memoryAdress = memoryPointer;
         var.name = $1;
+        var.isInit = true;
         memoryPointer++;
         var.isIterator = true;
+        var.isArray = false;
         variables.push_back(var);
 
         CustomIterator iter;

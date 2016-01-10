@@ -26,6 +26,8 @@ void declareVariable(std::string var){
 	vari.memoryAdress = memoryPointer;
 	vari.name = var;
 	vari.isIterator = false;
+	vari.isInit = false;
+	vari.isArray = false;
 	variables.push_back(vari);
     memoryPointer++;
 }
@@ -34,7 +36,9 @@ void declareArray(std::string array, long long int size){
 	CustomVariable var;
 	var.memoryAdress = memoryPointer;
 	var.name = array;
+	var.isInit = false;
 	var.isIterator = false;
+	var.isArray = true;
 	variables.push_back(var);
     memoryPointer += size;
 }
@@ -102,9 +106,45 @@ CustomVariable findVarByName(std::string name){
 	}
 }
 
-bool isIterator(long long var){
+bool isIterator(long long int var){
 	for(int i = variables.size() -1; i >= 0; i--){
 		if(var == variables[i].memoryAdress && variables[i].isIterator == true) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void setInitialized(long long int var){
+	for(int i = variables.size() -1; i >= 0; i--){
+		if(var == variables[i].memoryAdress) {
+			CustomVariable cus = variables[i];
+			cus.isInit = true;
+			variables[i] = cus;
+			return;
+		}
+	}
+}
+
+bool isVariableInitialized(long long int var){
+	for(int i = variables.size() - 1; i >= 0; i--){
+		if(var == variables[i].memoryAdress) {
+			return variables[i].isInit;
+		}
+	}
+}
+
+std::string findVariableNameByAddr(long long int var){
+	for(int i = variables.size() -1; i >= 0; i--){
+		if(var == variables[i].memoryAdress) {
+			return variables[i].name;
+		}
+	}
+}
+
+bool isArray(std::string name){
+	for(int i = variables.size() -1; i >= 0; i--){
+		if(name == variables[i].name && variables[i].isArray == true) {
 			return true;
 		}
 	}
