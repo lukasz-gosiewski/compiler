@@ -97,7 +97,7 @@ void loadVarToRegister(VarType var, int registerNumber){
 }
 
 CustomVariable findVarByName(std::string name){
-	for(int i = variables.size(); i >= 0; i--){
+	for(int i = variables.size() - 1; i >= 0; i--){
 		if(variables[i].name == name) return variables[i];
 	}
 }
