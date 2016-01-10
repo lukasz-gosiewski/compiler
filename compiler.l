@@ -8,24 +8,25 @@
 
 \[[^\]]*\]          ;
 [_a-z]+             { yylval.str = strdup(yytext); return ID; }
+[_a-z]+[0-9]+       { printf("Error: nierozpoznany napis\n"); exit(0);}
 [0-9]+              { yylval.num = atoll(yytext); return NUM; }
 "DECLARE"           { return DECLARE; }
 "IN"                { return IN; }
 "END"               { return END; }
+"IF"                { return IF; }
+"ELSE"              { return ELSE; }
+"ENDIF"             { return ENDIF; }
 "FOR"               { return FOR; }
+"ENDFOR"            { return ENDFOR; }
 "DOWN"              { return DOWN; }
 "FROM"              { return FROM; }
 "TO"                { return TO; }
-"ENDFOR"            { return ENDFOR; }
-"IF"                { return IF; }
 "THEN"              { return THEN; }
-"ELSE"              { return ELSE; }
-"ENDIF"             { return ENDIF; }
+"WHILE"             { return WHILE; }
+"ENDWHILE"          { return ENDWHILE; }
+"DO"                { return DO; }
 "GET"               { return GET; }
 "PUT"               { return PUT; }
-"WHILE"             { return WHILE; }
-"DO"                { return DO; }
-"ENDWHILE"          { return ENDWHILE; }
 "="                 { return EQUAL; }
 "+"                 { return ADD; }
 "-"                 { return SUB; }

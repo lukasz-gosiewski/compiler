@@ -348,6 +348,9 @@ expression
         $$.memoryStart = memoryPointer - 1;
         $$.elementIndexAddres = -1;
     }
+    | SUB value{
+        yyerror("Niewłaściwy znak -");
+    }
     ;
 
 condition
