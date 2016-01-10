@@ -6,6 +6,7 @@ std::vector<CustomVariable>  variables;
 std::vector<std::string> ASMCode;
 std::stack<long long int> jumpPlaces;
 long long int memoryPointer = 0;
+std::stack<CustomIterator> iterators;
 
 %}
 
@@ -48,12 +49,12 @@ long long int memoryPointer = 0;
 %token LEFT_PAR
 %token RIGHT_PAR
 %token <str> ID
-%token <str> IID
 %token <num> NUM
 %type <varType> expression
 %type <varType> identifier
 %type <varType> value
 %type <varType> condition
+%type <varType> iterator
 
 %%
 
@@ -85,6 +86,7 @@ commands
 
 command
     : identifier ASSIGN expression SEMICOLON{
+        if(isIterator($1)) yyerror("You cannot modify iterator");
         if($1.elementIndexAddres == -1) setRegister(0, $1.memoryStart);
         else{
             setRegister(0, $1.memoryStart);
@@ -126,7 +128,46 @@ command
         appendASMCode("JUMP " + intToString(jumpPlaces.top()));
         jumpPlaces.pop();
     }
-    | FOR iterator FROM value TO value DO commands ENDFOR
+    | FOR iterator FROM value TO value{
+        loadVarToRegister($4, 0);
+        setRegister(1, iterators.top().memoryAdress);
+        appendASMCode("STORE 0 1");
+
+        loadVarToRegister($4, 0);
+        loadVarToRegister($6, 1);
+
+        appendASMCode("SUB 1 0");
+        appendASMCode("INC 1");
+        setRegister(0, memoryPointer);
+        appendASMCode("STORE 1 0");
+        iterators.top().iterationsToFinishAddr = memoryPointer;
+        memoryPointer++;
+
+        jumpPlaces.push(ASMCode.size());
+        setRegister(1, iterators.top().iterationsToFinishAddr);
+        appendASMCode("LOAD 0 1");
+        jumpPlaces.push(ASMCode.size());
+        appendASMCode("JZERO 0 ");
+
+        appendASMCode("DEC 0");
+        setRegister(1, iterators.top().iterationsToFinishAddr);
+        appendASMCode("STORE 0 1");
+    }
+    DO commands ENDFOR{
+        setRegister(1, iterators.top().memoryAdress);
+        appendASMCode("LOAD 0 1");
+        appendASMCode("INC 0");
+        setRegister(1, iterators.top().memoryAdress);
+        appendASMCode("STORE 0 1");
+
+        ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
+        jumpPlaces.pop();
+        appendASMCode("JUMP " + intToString(jumpPlaces.top()));
+        jumpPlaces.pop();
+
+        variables.erase(variables.begin() + iterators.top().placeInVector);
+        iterators.pop();
+    }
     | FOR iterator DOWN FROM value TO value DO commands ENDFOR
     | GET identifier SEMICOLON{
         if($2.elementIndexAddres == -1) setRegister(1, $2.memoryStart);
@@ -384,9 +425,25 @@ identifier
     ;
 
 iterator
-    : {
+    : ID {
+        CustomVariable var;
+        var.memoryAdress.memoryStart = memoryPointer;
+        var.memoryAdress.elementIndexAddres = -1;
+        var.name = $1;
+        memoryPointer++;
+        var.isIterator = true;
+        variables.push_back(var);
 
+        CustomIterator iter;
+        iter.name = $1;
+        iter.memoryAdress = memoryPointer - 1;
+        iter.placeInVector = variables.size() - 1;
+        iterators.push(iter);
+
+        $$.memoryStart = iter.memoryAdress;
+        $$.elementIndexAddres = -1;
     }
+    ;
 
 %%
 

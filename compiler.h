@@ -18,12 +18,21 @@ typedef struct{
 typedef struct{
     std::string name;
     VarType memoryAdress;
+    bool isIterator;
 } CustomVariable;
+
+typedef struct{
+    int placeInVector;
+    std::string name;
+    int memoryAdress;
+    int iterationsToFinishAddr;
+} CustomIterator;
 
 extern std::vector<CustomVariable>  variables;
 extern std::vector<std::string> ASMCode;
 extern std::stack<long long int> jumpPlaces;
 extern long long int memoryPointer;
+extern std::stack<CustomIterator> iterators;
 
 void yyerror(std::string s);
 int yylex();
@@ -40,5 +49,6 @@ std::string binary(long long int x);
 void saveCodeToFile();
 void loadVarToRegister(VarType var, int registerNumber);
 CustomVariable findVarByName(std::string name);
+bool isIterator(VarType var);
 
 #endif

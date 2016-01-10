@@ -1,10 +1,8 @@
 DECLARE
-    a(10)
+	tab(20)
 IN
-    a(1) := 5;
-    a(2) := 6;
-    a(4) := a(1) + a(2);
-    PUT a(1);
-    PUT a(2);
-    PUT a(4);
+    FOR i FROM 5 TO 11 DO
+        tab(i) := i;
+        PUT tab(i);
+    ENDFOR
 END

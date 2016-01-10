@@ -71,9 +71,10 @@ std::vector<CustomVariable>  variables;
 std::vector<std::string> ASMCode;
 std::stack<long long int> jumpPlaces;
 long long int memoryPointer = 0;
+std::stack<CustomIterator> iterators;
 
 
-#line 77 "compiler.tab.c" /* yacc.c:339  */
+#line 78 "compiler.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -141,8 +142,7 @@ extern int yydebug;
     LEFT_PAR = 288,
     RIGHT_PAR = 289,
     ID = 290,
-    IID = 291,
-    NUM = 292
+    NUM = 291
   };
 #endif
 
@@ -151,7 +151,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 12 "compiler.y" /* yacc.c:355  */
+#line 13 "compiler.y" /* yacc.c:355  */
 
     char *str;
     long long int num;
@@ -416,21 +416,21 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   132
+#define YYLAST   116
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  38
+#define YYNTOKENS  37
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  12
+#define YYNNTS  13
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  35
+#define YYNRULES  36
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  87
+#define YYNSTATES  89
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   292
+#define YYMAXUTOK   291
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -468,17 +468,17 @@ static const yytype_uint8 yytranslate[] =
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37
+      35,    36
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    61,    61,    68,    73,    78,    82,    83,    87,   107,
-     112,   112,   112,   122,   129,   130,   131,   144,   151,   154,
-     166,   177,   198,   234,   272,   292,   304,   313,   322,   332,
-     345,   356,   360,   366,   377,   387
+       0,    62,    62,    69,    74,    79,    83,    84,    88,   109,
+     114,   114,   114,   124,   131,   131,   171,   172,   185,   192,
+     195,   207,   218,   239,   275,   313,   333,   345,   354,   363,
+     373,   386,   397,   401,   407,   418,   428
 };
 #endif
 
@@ -491,8 +491,8 @@ static const char *const yytname[] =
   "FROM", "TO", "ENDFOR", "IF", "THEN", "ELSE", "ENDIF", "GET", "PUT",
   "WHILE", "DO", "ENDWHILE", "EQUAL", "ADD", "SUB", "MULT", "DIV", "MOD",
   "DIFF", "SEMICOLON", "ASSIGN", "LESS", "MORE", "LESS_EQUAL",
-  "MORE_EQUAL", "LEFT_PAR", "RIGHT_PAR", "ID", "IID", "NUM", "$accept",
-  "program", "vdeclarations", "commands", "command", "$@1", "$@2",
+  "MORE_EQUAL", "LEFT_PAR", "RIGHT_PAR", "ID", "NUM", "$accept", "program",
+  "vdeclarations", "commands", "command", "$@1", "$@2", "$@3",
   "expression", "condition", "value", "identifier", "iterator", YY_NULLPTR
 };
 #endif
@@ -505,14 +505,14 @@ static const yytype_uint16 yytoknum[] =
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289,   290,   291,   292
+     285,   286,   287,   288,   289,   290,   291
 };
 # endif
 
-#define YYPACT_NINF -34
+#define YYPACT_NINF -23
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-34)))
+  (!!((Yystate) == (-23)))
 
 #define YYTABLE_NINF -1
 
@@ -523,15 +523,15 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      17,   -34,     8,    -3,   -34,   -34,   -11,    28,    -8,   -34,
-     -34,   -33,    -5,   -33,   -33,    -2,   -34,     9,     4,     5,
-     -34,    30,    90,   -34,    13,    19,    29,   -28,   -33,   -34,
-      46,   -33,   -34,   -33,   -33,   -33,   -33,   -33,   -33,   -34,
-     -34,   -34,    25,    27,    35,   107,   -33,    57,     0,   -34,
-     -34,   -34,   -34,   -34,   -34,    54,   -34,   -34,   -34,   -33,
-     -33,   -33,   -33,   -33,    58,   -33,   -34,    55,   -34,   -34,
-     -34,   -34,   -34,   -34,   -33,    60,   -34,    61,   -34,   -34,
-     -34,    71,    79,    92,   -34,   -34,   -34
+      -1,   -23,    10,    -3,   -23,   -23,   -12,     1,   -13,   -23,
+       6,    -5,    20,    -5,    -5,    28,   -23,    35,     0,   -23,
+      31,   -23,    57,    75,   -23,    44,    45,    55,    12,    -5,
+     -23,    67,    -5,   -23,    -5,    -5,    -5,    -5,    -5,    -5,
+     -23,   -23,   -23,    46,    47,    61,    87,    -5,    80,    29,
+     -23,   -23,   -23,   -23,   -23,   -23,    51,   -23,   -23,   -23,
+      -5,    -5,    -5,    -5,    -5,    84,    -5,   -23,    77,   -23,
+     -23,   -23,   -23,   -23,   -23,    -5,   -23,   -23,    76,    82,
+     -23,   -23,   -23,    68,    -2,    81,   -23,   -23,   -23
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -540,28 +540,28 @@ static const yytype_int8 yypact[] =
 static const yytype_uint8 yydefact[] =
 {
        0,     5,     0,     0,     1,     7,     3,     0,     0,     2,
-      35,     0,     0,     0,     0,    32,     6,     0,     0,     0,
-      30,     0,     0,    31,     0,     0,     0,     0,     0,     4,
-       0,     0,     7,     0,     0,     0,     0,     0,     0,    16,
-      17,     7,     0,     0,     0,    18,     0,     0,    10,    24,
-      25,    26,    27,    28,    29,     0,    33,    34,     8,     0,
-       0,     0,     0,     0,     0,     0,     9,     0,    13,    19,
-      20,    21,    22,    23,     0,     0,    11,     0,     7,     7,
-       7,     0,     0,     0,    14,    12,    15
+       0,     0,     0,     0,     0,    33,     6,     0,     0,    36,
+       0,    31,     0,     0,    32,     0,     0,     0,     0,     0,
+       4,     0,     0,     7,     0,     0,     0,     0,     0,     0,
+      17,    18,     7,     0,     0,     0,    19,     0,     0,    10,
+      25,    26,    27,    28,    29,    30,     0,    34,    35,     8,
+       0,     0,     0,     0,     0,     0,     0,     9,     0,    13,
+      20,    21,    22,    23,    24,     0,    14,    11,     0,     0,
+       7,     7,     7,     0,     0,     0,    12,    16,    15
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -34,   -34,   -34,   -22,   -34,   -34,   -34,   -34,    66,   -10,
-      -7,   -34
+     -23,   -23,   -23,   -22,   -23,   -23,   -23,   -23,   -23,    85,
+     -10,    -7,   -23
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     7,    16,    67,    79,    44,    21,    22,
-      23,    19
+      -1,     2,     3,     7,    16,    68,    80,    79,    45,    22,
+      23,    24,    20
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -569,71 +569,67 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      17,     5,    15,    25,    20,    24,    10,    42,     4,    43,
-      48,    11,    30,    31,    66,    12,    13,    14,    45,    55,
-       1,    47,     8,    49,    50,    51,    52,    53,    54,    18,
-      15,    27,     6,     9,    10,    15,    64,    28,    29,    11,
-      39,    17,    32,    12,    13,    14,    40,    41,    17,    69,
-      70,    71,    72,    73,    46,    75,    81,    82,    83,    56,
-      10,    57,    58,    15,    77,    11,    65,    74,    76,    12,
-      13,    14,     0,    68,    17,    17,    17,    10,    78,    80,
-      26,    84,    11,     0,     0,    10,    12,    13,    14,    15,
-      11,     0,     0,    85,    12,    13,    14,     0,    10,     0,
-       0,     0,    86,    11,     0,     0,    15,    12,    13,    14,
-      33,     0,     0,     0,    15,     0,    34,     0,     0,    35,
-      36,    37,    38,     0,     0,     0,     0,    15,    59,    60,
-      61,    62,    63
+      17,     5,     1,    26,    10,    25,     9,    10,    87,    11,
+       4,    49,    11,    12,    13,    14,    12,    13,    14,    46,
+      56,     8,    48,    18,    50,    51,    52,    53,    54,    55,
+      15,    21,     6,    15,    30,    10,    15,    65,    31,    32,
+      11,    19,    17,    67,    12,    13,    14,    43,    44,    17,
+      70,    71,    72,    73,    74,    15,    76,    10,    83,    84,
+      85,    28,    11,    29,    15,    78,    12,    13,    14,    33,
+      69,    40,    41,    42,    10,    47,    17,    17,    17,    11,
+      57,    58,    86,    12,    13,    14,    15,    10,    59,    66,
+      77,    88,    11,    75,    81,    34,    12,    13,    14,    27,
+      82,    35,     0,    15,    36,    37,    38,    39,    60,    61,
+      62,    63,    64,     0,     0,     0,    15
 };
 
 static const yytype_int8 yycheck[] =
 {
-       7,     4,    35,    13,    37,    12,     6,    35,     0,    37,
-      32,    11,     7,     8,    14,    15,    16,    17,    28,    41,
-       3,    31,    33,    33,    34,    35,    36,    37,    38,    37,
-      35,    33,    35,     5,     6,    35,    46,    28,    34,    11,
-      27,    48,    12,    15,    16,    17,    27,    18,    55,    59,
-      60,    61,    62,    63,     8,    65,    78,    79,    80,    34,
-       6,    34,    27,    35,    74,    11,     9,     9,    13,    15,
-      16,    17,    -1,    19,    81,    82,    83,     6,    18,    18,
-      14,    10,    11,    -1,    -1,     6,    15,    16,    17,    35,
-      11,    -1,    -1,    14,    15,    16,    17,    -1,     6,    -1,
-      -1,    -1,    10,    11,    -1,    -1,    35,    15,    16,    17,
-      20,    -1,    -1,    -1,    35,    -1,    26,    -1,    -1,    29,
-      30,    31,    32,    -1,    -1,    -1,    -1,    35,    21,    22,
-      23,    24,    25
+       7,     4,     3,    13,     6,    12,     5,     6,    10,    11,
+       0,    33,    11,    15,    16,    17,    15,    16,    17,    29,
+      42,    33,    32,    36,    34,    35,    36,    37,    38,    39,
+      35,    36,    35,    35,    34,     6,    35,    47,     7,     8,
+      11,    35,    49,    14,    15,    16,    17,    35,    36,    56,
+      60,    61,    62,    63,    64,    35,    66,     6,    80,    81,
+      82,    33,    11,    28,    35,    75,    15,    16,    17,    12,
+      19,    27,    27,    18,     6,     8,    83,    84,    85,    11,
+      34,    34,    14,    15,    16,    17,    35,     6,    27,     9,
+      13,    10,    11,     9,    18,    20,    15,    16,    17,    14,
+      18,    26,    -1,    35,    29,    30,    31,    32,    21,    22,
+      23,    24,    25,    -1,    -1,    -1,    35
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,    39,    40,     0,     4,    35,    41,    33,     5,
-       6,    11,    15,    16,    17,    35,    42,    48,    37,    49,
-      37,    46,    47,    48,    48,    47,    46,    33,    28,    34,
-       7,     8,    12,    20,    26,    29,    30,    31,    32,    27,
-      27,    18,    35,    37,    45,    47,     8,    47,    41,    47,
-      47,    47,    47,    47,    47,    41,    34,    34,    27,    21,
-      22,    23,    24,    25,    47,     9,    14,    43,    19,    47,
-      47,    47,    47,    47,     9,    47,    13,    47,    18,    44,
-      18,    41,    41,    41,    10,    14,    10
+       0,     3,    38,    39,     0,     4,    35,    40,    33,     5,
+       6,    11,    15,    16,    17,    35,    41,    48,    36,    35,
+      49,    36,    46,    47,    48,    48,    47,    46,    33,    28,
+      34,     7,     8,    12,    20,    26,    29,    30,    31,    32,
+      27,    27,    18,    35,    36,    45,    47,     8,    47,    40,
+      47,    47,    47,    47,    47,    47,    40,    34,    34,    27,
+      21,    22,    23,    24,    25,    47,     9,    14,    42,    19,
+      47,    47,    47,    47,    47,     9,    47,    13,    47,    44,
+      43,    18,    18,    40,    40,    40,    14,    10,    10
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    38,    39,    40,    40,    40,    41,    41,    42,    42,
-      43,    44,    42,    42,    42,    42,    42,    42,    45,    45,
-      45,    45,    45,    45,    46,    46,    46,    46,    46,    46,
-      47,    47,    48,    48,    48,    49
+       0,    37,    38,    39,    39,    39,    40,    40,    41,    41,
+      42,    43,    41,    41,    44,    41,    41,    41,    41,    45,
+      45,    45,    45,    45,    45,    46,    46,    46,    46,    46,
+      46,    47,    47,    48,    48,    48,    49
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     5,     2,     5,     0,     2,     0,     4,     5,
-       0,     0,     9,     5,     9,    10,     3,     3,     1,     3,
+       0,     0,     9,     5,     0,    10,    10,     3,     3,     1,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       1,     1,     1,     4,     4,     0
+       3,     1,     1,     1,     4,     4,     1
 };
 
 
@@ -1310,37 +1306,38 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 61 "compiler.y" /* yacc.c:1646  */
+#line 62 "compiler.y" /* yacc.c:1646  */
     {
         appendASMCode("HALT");
         saveCodeToFile();
     }
-#line 1319 "compiler.tab.c" /* yacc.c:1646  */
+#line 1315 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 68 "compiler.y" /* yacc.c:1646  */
+#line 69 "compiler.y" /* yacc.c:1646  */
     {
         std::string IDAsString((yyvsp[0].str));
         if(isVariableDeclared(IDAsString)) yyerror(IDAsString + " is already declared");
         else declareVariable(IDAsString);
     }
-#line 1329 "compiler.tab.c" /* yacc.c:1646  */
+#line 1325 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 73 "compiler.y" /* yacc.c:1646  */
+#line 74 "compiler.y" /* yacc.c:1646  */
     {
         std::string IDAsString((yyvsp[-3].str));
         if(isVariableDeclared(IDAsString)) yyerror(IDAsString + " is already declared");
         else declareArray(IDAsString, (yyvsp[-1].num));
     }
-#line 1339 "compiler.tab.c" /* yacc.c:1646  */
+#line 1335 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 87 "compiler.y" /* yacc.c:1646  */
+#line 88 "compiler.y" /* yacc.c:1646  */
     {
+        if(isIterator((yyvsp[-3].varType))) yyerror("You cannot modify iterator");
         if((yyvsp[-3].varType).elementIndexAddres == -1) setRegister(0, (yyvsp[-3].varType).memoryStart);
         else{
             setRegister(0, (yyvsp[-3].varType).memoryStart);
@@ -1360,48 +1357,48 @@ yyreduce:
 
         appendASMCode("STORE 1 0");
     }
-#line 1364 "compiler.tab.c" /* yacc.c:1646  */
+#line 1361 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 107 "compiler.y" /* yacc.c:1646  */
+#line 109 "compiler.y" /* yacc.c:1646  */
     {
         ASMCode[jumpPlaces.top()] += intToString(ASMCode.size());
         jumpPlaces.pop();
         jumpPlaces.pop();
     }
-#line 1374 "compiler.tab.c" /* yacc.c:1646  */
+#line 1371 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 112 "compiler.y" /* yacc.c:1646  */
+#line 114 "compiler.y" /* yacc.c:1646  */
     {}
-#line 1380 "compiler.tab.c" /* yacc.c:1646  */
+#line 1377 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 112 "compiler.y" /* yacc.c:1646  */
+#line 114 "compiler.y" /* yacc.c:1646  */
     {
             ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
             jumpPlaces.pop();
             jumpPlaces.push(ASMCode.size());
             appendASMCode("JUMP ");
         }
-#line 1391 "compiler.tab.c" /* yacc.c:1646  */
+#line 1388 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 117 "compiler.y" /* yacc.c:1646  */
+#line 119 "compiler.y" /* yacc.c:1646  */
     {
             ASMCode[jumpPlaces.top()] += intToString(ASMCode.size());
             jumpPlaces.pop();
             jumpPlaces.pop();
         }
-#line 1401 "compiler.tab.c" /* yacc.c:1646  */
+#line 1398 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 122 "compiler.y" /* yacc.c:1646  */
+#line 124 "compiler.y" /* yacc.c:1646  */
     {
         ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
         jumpPlaces.pop();
@@ -1409,11 +1406,61 @@ yyreduce:
         appendASMCode("JUMP " + intToString(jumpPlaces.top()));
         jumpPlaces.pop();
     }
-#line 1413 "compiler.tab.c" /* yacc.c:1646  */
+#line 1410 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 16:
+  case 14:
 #line 131 "compiler.y" /* yacc.c:1646  */
+    {
+        loadVarToRegister((yyvsp[-2].varType), 0);
+        setRegister(1, iterators.top().memoryAdress);
+        appendASMCode("STORE 0 1");
+
+        loadVarToRegister((yyvsp[-2].varType), 0);
+        loadVarToRegister((yyvsp[0].varType), 1);
+
+        appendASMCode("SUB 1 0");
+        appendASMCode("INC 1");
+        setRegister(0, memoryPointer);
+        appendASMCode("STORE 1 0");
+        iterators.top().iterationsToFinishAddr = memoryPointer;
+        memoryPointer++;
+
+        jumpPlaces.push(ASMCode.size());
+        setRegister(1, iterators.top().iterationsToFinishAddr);
+        appendASMCode("LOAD 0 1");
+        jumpPlaces.push(ASMCode.size());
+        appendASMCode("JZERO 0 ");
+
+        appendASMCode("DEC 0");
+        setRegister(1, iterators.top().iterationsToFinishAddr);
+        appendASMCode("STORE 0 1");
+    }
+#line 1440 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 15:
+#line 156 "compiler.y" /* yacc.c:1646  */
+    {
+        setRegister(1, iterators.top().memoryAdress);
+        appendASMCode("LOAD 0 1");
+        appendASMCode("INC 0");
+        setRegister(1, iterators.top().memoryAdress);
+        appendASMCode("STORE 0 1");
+
+        ASMCode[jumpPlaces.top()] += intToString(ASMCode.size() + 1);
+        jumpPlaces.pop();
+        appendASMCode("JUMP " + intToString(jumpPlaces.top()));
+        jumpPlaces.pop();
+
+        variables.erase(variables.begin() + iterators.top().placeInVector);
+        iterators.pop();
+    }
+#line 1460 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 17:
+#line 172 "compiler.y" /* yacc.c:1646  */
     {
         if((yyvsp[-1].varType).elementIndexAddres == -1) setRegister(1, (yyvsp[-1].varType).memoryStart);
         else{
@@ -1427,28 +1474,28 @@ yyreduce:
         appendASMCode("STORE 0 1");
 
     }
-#line 1431 "compiler.tab.c" /* yacc.c:1646  */
+#line 1478 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 17:
-#line 144 "compiler.y" /* yacc.c:1646  */
+  case 18:
+#line 185 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-1].varType), 0);
         appendASMCode("WRITE 0");
     }
-#line 1440 "compiler.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 18:
-#line 151 "compiler.y" /* yacc.c:1646  */
-    {
-        (yyval.varType) = (yyvsp[0].varType);
-    }
-#line 1448 "compiler.tab.c" /* yacc.c:1646  */
+#line 1487 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 154 "compiler.y" /* yacc.c:1646  */
+#line 192 "compiler.y" /* yacc.c:1646  */
+    {
+        (yyval.varType) = (yyvsp[0].varType);
+    }
+#line 1495 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 20:
+#line 195 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1461,11 +1508,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1465 "compiler.tab.c" /* yacc.c:1646  */
+#line 1512 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 20:
-#line 166 "compiler.y" /* yacc.c:1646  */
+  case 21:
+#line 207 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1477,11 +1524,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1481 "compiler.tab.c" /* yacc.c:1646  */
+#line 1528 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 21:
-#line 177 "compiler.y" /* yacc.c:1646  */
+  case 22:
+#line 218 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1503,11 +1550,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1507 "compiler.tab.c" /* yacc.c:1646  */
+#line 1554 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 22:
-#line 198 "compiler.y" /* yacc.c:1646  */
+  case 23:
+#line 239 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1544,11 +1591,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1548 "compiler.tab.c" /* yacc.c:1646  */
+#line 1595 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 23:
-#line 234 "compiler.y" /* yacc.c:1646  */
+  case 24:
+#line 275 "compiler.y" /* yacc.c:1646  */
     {
         loadVarToRegister((yyvsp[-2].varType), 0);
         loadVarToRegister((yyvsp[0].varType), 1);
@@ -1584,11 +1631,11 @@ yyreduce:
         (yyval.varType).memoryStart = memoryPointer - 1;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1588 "compiler.tab.c" /* yacc.c:1646  */
+#line 1635 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 24:
-#line 272 "compiler.y" /* yacc.c:1646  */
+  case 25:
+#line 313 "compiler.y" /* yacc.c:1646  */
     {
         jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
@@ -1609,11 +1656,11 @@ yyreduce:
         appendASMCode("JZERO 0 ");
 
     }
-#line 1613 "compiler.tab.c" /* yacc.c:1646  */
+#line 1660 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 25:
-#line 292 "compiler.y" /* yacc.c:1646  */
+  case 26:
+#line 333 "compiler.y" /* yacc.c:1646  */
     {
         jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
@@ -1626,11 +1673,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1630 "compiler.tab.c" /* yacc.c:1646  */
+#line 1677 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 26:
-#line 304 "compiler.y" /* yacc.c:1646  */
+  case 27:
+#line 345 "compiler.y" /* yacc.c:1646  */
     {
         jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
@@ -1640,11 +1687,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 1 ");
     }
-#line 1644 "compiler.tab.c" /* yacc.c:1646  */
+#line 1691 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 27:
-#line 313 "compiler.y" /* yacc.c:1646  */
+  case 28:
+#line 354 "compiler.y" /* yacc.c:1646  */
     {
         jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
@@ -1654,11 +1701,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1658 "compiler.tab.c" /* yacc.c:1646  */
+#line 1705 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 28:
-#line 322 "compiler.y" /* yacc.c:1646  */
+  case 29:
+#line 363 "compiler.y" /* yacc.c:1646  */
     {
         jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
@@ -1669,11 +1716,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 1 ");
     }
-#line 1673 "compiler.tab.c" /* yacc.c:1646  */
+#line 1720 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 29:
-#line 332 "compiler.y" /* yacc.c:1646  */
+  case 30:
+#line 373 "compiler.y" /* yacc.c:1646  */
     {
         jumpPlaces.push(ASMCode.size());
         loadVarToRegister((yyvsp[-2].varType), 0);
@@ -1684,11 +1731,11 @@ yyreduce:
         jumpPlaces.push(ASMCode.size());
         appendASMCode("JZERO 0 ");
     }
-#line 1688 "compiler.tab.c" /* yacc.c:1646  */
+#line 1735 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 30:
-#line 345 "compiler.y" /* yacc.c:1646  */
+  case 31:
+#line 386 "compiler.y" /* yacc.c:1646  */
     {
         long long int numAddr = memoryPointer;
         memoryPointer++;
@@ -1700,28 +1747,28 @@ yyreduce:
         (yyval.varType).memoryStart = numAddr;
         (yyval.varType).elementIndexAddres = - 1;
     }
-#line 1704 "compiler.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 31:
-#line 356 "compiler.y" /* yacc.c:1646  */
-    {(yyval.varType) = (yyvsp[0].varType);}
-#line 1710 "compiler.tab.c" /* yacc.c:1646  */
+#line 1751 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 360 "compiler.y" /* yacc.c:1646  */
+#line 397 "compiler.y" /* yacc.c:1646  */
+    {(yyval.varType) = (yyvsp[0].varType);}
+#line 1757 "compiler.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 33:
+#line 401 "compiler.y" /* yacc.c:1646  */
     {
         std::string IDAsString((yyvsp[0].str));
         if(!isVariableDeclared(IDAsString)) yyerror(IDAsString + " is undeclared");
         (yyval.varType).memoryStart = findVarByName(IDAsString).memoryAdress.memoryStart;
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1721 "compiler.tab.c" /* yacc.c:1646  */
+#line 1768 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 33:
-#line 366 "compiler.y" /* yacc.c:1646  */
+  case 34:
+#line 407 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         std::string ArrayCounterIDAsString((yyvsp[-1].str));
@@ -1733,11 +1780,11 @@ yyreduce:
         (yyval.varType).elementIndexAddres = findVarByName(ArrayIDAsString).memoryAdress.elementIndexAddres;
 
     }
-#line 1737 "compiler.tab.c" /* yacc.c:1646  */
+#line 1784 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 34:
-#line 377 "compiler.y" /* yacc.c:1646  */
+  case 35:
+#line 418 "compiler.y" /* yacc.c:1646  */
     {
         std::string ArrayIDAsString((yyvsp[-3].str));
         if(!isVariableDeclared(ArrayIDAsString)) yyerror(ArrayIDAsString + " is undeclared");
@@ -1745,19 +1792,34 @@ yyreduce:
         (yyval.varType).memoryStart = findVarByName(ArrayIDAsString).memoryAdress.memoryStart + (yyvsp[-1].num);
         (yyval.varType).elementIndexAddres = -1;
     }
-#line 1749 "compiler.tab.c" /* yacc.c:1646  */
+#line 1796 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
-  case 35:
-#line 387 "compiler.y" /* yacc.c:1646  */
+  case 36:
+#line 428 "compiler.y" /* yacc.c:1646  */
     {
+        CustomVariable var;
+        var.memoryAdress.memoryStart = memoryPointer;
+        var.memoryAdress.elementIndexAddres = -1;
+        var.name = (yyvsp[0].str);
+        memoryPointer++;
+        var.isIterator = true;
+        variables.push_back(var);
 
+        CustomIterator iter;
+        iter.name = (yyvsp[0].str);
+        iter.memoryAdress = memoryPointer - 1;
+        iter.placeInVector = variables.size() - 1;
+        iterators.push(iter);
+
+        (yyval.varType).memoryStart = iter.memoryAdress;
+        (yyval.varType).elementIndexAddres = -1;
     }
-#line 1757 "compiler.tab.c" /* yacc.c:1646  */
+#line 1819 "compiler.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1761 "compiler.tab.c" /* yacc.c:1646  */
+#line 1823 "compiler.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1985,7 +2047,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 391 "compiler.y" /* yacc.c:1906  */
+#line 448 "compiler.y" /* yacc.c:1906  */
 
 
 int main(void) {

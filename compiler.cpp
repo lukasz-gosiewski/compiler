@@ -4,6 +4,7 @@ extern std::vector<CustomVariable>  variables;
 extern std::vector<std::string> ASMCode;
 extern std::stack<long long int> jumpPlaces;
 extern long long int memoryPointer;
+extern std::stack<CustomIterator> iterators;
 
 void yyerror(std::string s) {
 	std::cout << "Error: " << s << std::endl;
@@ -25,6 +26,7 @@ void declareVariable(std::string var){
 	vari.memoryAdress.memoryStart = memoryPointer;
 	vari.memoryAdress.elementIndexAddres = -1;
 	vari.name = var;
+	vari.isIterator = false;
 	variables.push_back(vari);
     memoryPointer++;
 }
@@ -34,6 +36,7 @@ void declareArray(std::string array, long long int size){
 	var.memoryAdress.memoryStart = memoryPointer;
 	var.memoryAdress.elementIndexAddres = 0;
 	var.name = array;
+	var.isIterator = false;
 	variables.push_back(var);
     memoryPointer += size;
 }
@@ -96,7 +99,16 @@ void loadVarToRegister(VarType var, int registerNumber){
 }
 
 CustomVariable findVarByName(std::string name){
-	for(int i = 0; i < variables.size(); i++){
+	for(int i = variables.size() - 1; i >= 0; i--){
 		if(variables[i].name == name) return variables[i];
 	}
+}
+
+bool isIterator(VarType var){
+	for(int i = variables.size() -1; i >= 0; i--){
+		if(var.memoryStart == variables[i].memoryAdress.memoryStart && var.elementIndexAddres == variables[i].memoryAdress.elementIndexAddres && variables[i].isIterator == true) {
+			return true;
+		}
+	}
+	return false;
 }
